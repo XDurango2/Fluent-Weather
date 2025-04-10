@@ -2,8 +2,11 @@ import React from 'react';
 import { Stack, Text } from '@fluentui/react';
 
 const UVScale = ({ uvIndex }) => {
+  // Asegurarse de que uvIndex es un número
+  const numericUvIndex = Number(uvIndex);
+  
   // Redondeamos el índice UV para asegurarnos de que es un número entero
-  const roundedUvIndex = Math.round(uvIndex);
+  const roundedUvIndex = Math.round(numericUvIndex);
   
   // Definimos los rangos de UV y sus colores correspondientes
   const uvRanges = [
@@ -17,7 +20,7 @@ const UVScale = ({ uvIndex }) => {
   // Encontramos el rango actual basado en el índice UV
   const currentRange = uvRanges.find(range => 
     roundedUvIndex >= range.min && roundedUvIndex <= range.max
-  ) || uvRanges[uvRanges.length - 1]; // Por defecto, usar el último rango si no coincide
+  ) || uvRanges[0]; // Por defecto, usar el primer rango si no coincide
 
   // Calculamos la posición del indicador en la escala (0-100%)
   const maxUV = 11; // Consideramos 11 como el máximo para el cálculo de la posición
@@ -25,7 +28,7 @@ const UVScale = ({ uvIndex }) => {
 
   return (
     <Stack style={{ marginTop: 20, marginBottom: 20 }}>
-      <Text variant="large">Índice UV: {uvIndex} - {currentRange.label}</Text>
+      <Text variant="large">Índice UV: {numericUvIndex} - {currentRange.label}</Text>
       
       {/* Contenedor de la escala */}
       <Stack style={{ position: 'relative', marginTop: 10, height: 50 }}>
@@ -105,11 +108,11 @@ const UVScale = ({ uvIndex }) => {
       
       {/* Recomendación basada en el índice UV */}
       <Text style={{ marginTop: 10 }}>
-        {uvIndex <= 2 && "No se necesita protección."}
-        {uvIndex >= 3 && uvIndex <= 5 && "Se recomienda usar protector solar y sombrero."}
-        {uvIndex >= 6 && uvIndex <= 7 && "Usar protector solar SPF 30+, sombrero y gafas de sol."}
-        {uvIndex >= 8 && uvIndex <= 10 && "Evitar el sol de 10 AM a 4 PM. Usar protector solar SPF 50+."}
-        {uvIndex >= 11 && "¡Extremo! Evitar exposición al sol. Usar todas las protecciones posibles."}
+        {numericUvIndex <= 2 && "No se necesita protección."}
+        {numericUvIndex >= 3 && numericUvIndex <= 5 && "Se recomienda usar protector solar y sombrero."}
+        {numericUvIndex >= 6 && numericUvIndex <= 7 && "Usar protector solar SPF 30+, sombrero y gafas de sol."}
+        {numericUvIndex >= 8 && numericUvIndex <= 10 && "Evitar el sol de 10 AM a 4 PM. Usar protector solar SPF 50+."}
+        {numericUvIndex >= 11 && "¡Extremo! Evitar exposición al sol. Usar todas las protecciones posibles."}
       </Text>
     </Stack>
   );

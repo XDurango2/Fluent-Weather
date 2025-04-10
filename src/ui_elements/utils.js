@@ -1,31 +1,57 @@
 export const getWindDirectionAngle = (direction) => {
-    const directions = {
-      'Norte': 0,
-      'Noreste': 45,
-      'Este': 90,
-      'Sureste': 135,
-      'Sur': 180,
-      'Suroeste': 225,
-      'Oeste': 270,
-      'Noroeste': 315,
-    };
-    return directions[direction] || 0; // Devuelve 0 si la dirección no coincide
+  const directions = {
+    'N': 0,
+    'NE': 45,
+    'E': 90,
+    'SE': 135,
+    'S': 180,
+    'SW': 225,
+    'W': 270,
+    'NW': 315,
   };
-  
-  export const airQualityIconMap = {
-    'Buena': 'Emoji2',
-    'Moderada': 'Info',
-    'Mala': 'Warning',
-    'Muy mala': 'Error',
-    'Peligrosa': 'Blocked2',
+  return directions[direction] || 0;
+};
+
+export const airQualityIconMap = {
+  1: 'Emoji2',          // Buena
+  2: 'Info',           // Moderada
+  3: 'Warning',        // Mala
+  4: 'Error',          // Muy mala
+  5: 'Blocked2',       // Peligrosa
+  6: 'AlertSolid'      // Extremadamente peligrosa
+};
+
+export const weatherIconMap = {
+  'Sunny': 'Sunny',
+  'Partly cloudy': 'PartlyCloudyDay',
+  'Cloudy': 'CloudyWeather',
+  'Overcast': 'Cloudy',
+  'Mist': 'Haze',
+  'Patchy rain possible': 'WeatherRainShower',
+  'Light rain': 'WeatherDrizzle',
+  'Moderate rain': 'WeatherRain',
+  'Heavy rain': 'WeatherRainShowersDay',
+  'Thunder': 'WeatherStormShowers',
+  'Snow': 'WeatherSnow',
+  'Light snow': 'WeatherFlurries',
+  'Heavy snow': 'WeatherSnow',
+  'Clear': 'WeatherMoon',
+  'Fog': 'FoggyDay',
+  'Light drizzle': 'WeatherDrizzle',
+  'Light rain shower': 'WeatherRainShower',
+  'Moderate or heavy rain shower': 'WeatherRainShowersDay',
+  'Thundery outbreaks possible': 'WeatherStormShowers'
+};
+
+
+export const getAirQualityLabel = (index) => {
+  const labels = {
+    1: 'Buena',
+    2: 'Moderada',
+    3: 'Mala',
+    4: 'Muy mala',
+    5: 'Peligrosa',
+    6: 'Extremadamente peligrosa'
   };
-  
-  export const weatherIconMap = {
-    'clear': 'Sunny',
-    'cloudy': 'PartlyCloudyDay',
-    'rain': 'Rain',
-    'thunderstorm': 'Thunderstorms',
-    'snow': 'Snow',
-    'mist': 'Fog',
-  };
-  
+  return labels[index] || 'Desconocida';
+};

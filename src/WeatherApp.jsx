@@ -8,9 +8,10 @@ import {
   ThemeProvider, 
   initializeIcons,
   Toggle,
-  ChoiceGroup
+  ChoiceGroup,
+  Panel,
+  PanelType
 } from '@fluentui/react';
-import { getMockWeatherData, getMockComparisonData } from './ui_elements/mockData.js';
 import WeatherInfo from './ui_elements/weather_info.js';
 import HourlyForecast from './ui_elements/HourlyForecast';
 import ForecastList from './ui_elements/ForecastList';
@@ -20,13 +21,66 @@ import UVHourly from './ui_elements/UV_hourly.js';
 import UVScale from './ui_elements/UV_scale.js';
 import Header from './components/Header.jsx';
 import { lightTheme, darkTheme } from './themes.js';
+// Import the JSON data directly
+import mockWeatherDataLondon from './components/mockData.json';
 
 initializeIcons();
 
+// Function to get weather data based on city
+const getWeatherData = (city) => {
+  // In a real application, this would make an API call based on the city name
+  // For now, we're using the static JSON data for all cities
+  // You could extend this with more mock data files for different cities
+  return {
+    ...mockWeatherDataLondon,
+    location: {
+      ...mockWeatherDataLondon.location,
+      name: city || mockWeatherDataLondon.location.name
+    }
+  };
+};
+
+const generateForecastData = (baseData) => {
+  // Generate hourly forecast data
+  const hourly = Array.from({ length: 24 }, (_, i) => ({
+    dt: new Date().setHours(new Date().getHours() + i),
+    temp: baseData.current.temp_c + Math.sin(i/3) * 5,
+    weather: [{ 
+      description: baseData.current.condition.text,
+      icon: baseData.current.condition.icon
+    }],
+    humidity: Math.min(100, Math.max(30, baseData.current.humidity + Math.sin(i/4) * 10)),
+    wind_speed: baseData.current.wind_kph + Math.sin(i/4) * 5,
+    wind_deg: ((baseData.current.wind_degree || 0) + i * 15) % 360
+  }));
+
+  // Generate daily forecast data
+  const daily = Array.from({ length: 7 }, (_, i) => ({
+    dt: new Date().setDate(new Date().getDate() + i),
+    temp: {
+      min: baseData.current.temp_c - 5 + Math.sin(i/2) * 3,
+      max: baseData.current.temp_c + 5 + Math.sin(i/2) * 4
+    },
+    weather: [{ 
+      description: baseData.current.condition.text,
+      icon: baseData.current.condition.icon
+    }],
+    humidity: Math.min(100, Math.max(30, baseData.current.humidity + Math.sin(i/3) * 15)),
+    wind_speed: baseData.current.wind_kph + Math.sin(i/3) * 8,
+    wind_deg: ((baseData.current.wind_degree || 0) + i * 45) % 360,
+    pressure: baseData.current.pressure_mb
+  }));
+
+  return {
+    ...baseData,
+    hourly,
+    daily
+  };
+};
 const WeatherApp = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [city, setCity] = useState('Madrid');
+  const [city, setCity] = useState('London'); // Changed to match default JSON data
   const [error, setError] = useState(null);
   const [searchCity, setSearchCity] = useState('');
   const [selectedForecast, setSelectedForecast] = useState(null);
@@ -40,36 +94,67 @@ const WeatherApp = () => {
   const [comparisonData, setComparisonData] = useState(null);
   const [comparisonLoading, setComparisonLoading] = useState(false);
   const [comparisonError, setComparisonError] = useState(null);
-
+  const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
   const scrollLeft = () => {
     if (hourlyForecastRef.current) {
-      hourlyForecastRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+      const scrollWidth = hourlyForecastRef.current.scrollWidth;
+      const clientWidth = hourlyForecastRef.current.clientWidth;
+      const scrollAmount = Math.min(clientWidth, 300);
+      hourlyForecastRef.current.scrollLeft -= scrollAmount;
     }
   };
-
+  
   const scrollRight = () => {
     if (hourlyForecastRef.current) {
-      hourlyForecastRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+      const scrollWidth = hourlyForecastRef.current.scrollWidth;
+      const clientWidth = hourlyForecastRef.current.clientWidth;
+      const scrollAmount = Math.min(clientWidth, 300);
+      hourlyForecastRef.current.scrollLeft += scrollAmount;
     }
   };
-
   // Memoized conversion functions to avoid unnecessary recalculations
   const convertTemp = useMemo(() => {
-    return (temp) => temperatureUnit === 'fahrenheit' ? Math.round((temp * 9/5) + 32) : temp;
+    return (temp) => {
+      if (temperatureUnit === 'fahrenheit') {
+        // If we're dealing with our generated data (which is in Celsius)
+        if (typeof temp === 'number') {
+          return Math.round((temp * 9/5) + 32);
+        }
+        // If we're dealing with the temp object from daily forecast
+        if (temp && typeof temp.min === 'number' && typeof temp.max === 'number') {
+          return {
+            min: Math.round((temp.min * 9/5) + 32),
+            max: Math.round((temp.max * 9/5) + 32)
+          };
+        }
+      }
+      return temp;
+    };
   }, [temperatureUnit]);
 
   const convertWind = useMemo(() => {
-    return (speed) => windUnit === 'mph' ? Math.round(speed * 0.621371) : speed;
+    return (speed) => {
+      if (windUnit === 'mph' && typeof speed === 'number') {
+        return Math.round(speed * 0.621371);
+      }
+      return speed;
+    };
   }, [windUnit]);
 
   useEffect(() => {
     const fetchWeatherData = async () => {
       setLoading(true);
       try {
+        // Simulate API loading time
         await new Promise(resolve => setTimeout(resolve, 1000));
-        const mockData = getMockWeatherData(city);
-        if (!mockData) throw new Error('No se encontraron datos para esta ciudad');
-        setWeatherData(mockData);
+        
+        // Get the base weather data from our JSON
+        const baseData = getWeatherData(city);
+        
+        // Add forecast data since it's not in the original JSON
+        const enrichedData = generateForecastData(baseData);
+        
+        setWeatherData(enrichedData);
         setError(null);
       } catch (err) {
         setError('Error al cargar los datos del clima: ' + err.message);
@@ -89,9 +174,25 @@ const WeatherApp = () => {
       setComparisonError(null);
       try {
         await new Promise(resolve => setTimeout(resolve, 800));
-        const mockComparisonData = getMockComparisonData(comparisonCity);
-        if (!mockComparisonData) throw new Error('No hay datos disponibles para esta ciudad');
-        setComparisonData(mockComparisonData);
+        
+        // For comparison, we'll use the same data but modify some values
+        const baseData = getWeatherData(comparisonCity);
+        
+        // Modify some values to simulate different weather
+        const modifiedData = {
+          ...baseData,
+          current: {
+            ...baseData.current,
+            temp_c: baseData.current.temp_c + (Math.random() * 6 - 3),
+            temp_f: baseData.current.temp_f + (Math.random() * 10 - 5),
+            humidity: Math.min(100, Math.max(30, baseData.current.humidity + (Math.random() * 20 - 10)))
+          }
+        };
+        
+        // Add forecast data
+        const enrichedData = generateForecastData(modifiedData);
+        
+        setComparisonData(enrichedData);
       } catch (err) {
         setComparisonError('Error al obtener datos de comparación: ' + err.message);
         console.error('Error al obtener datos de comparación:', err.message);
@@ -147,56 +248,93 @@ const WeatherApp = () => {
     { key: 'mph', text: 'mph' }
   ];
 
+  // Helper function to display temperature based on user preference
+  const displayTemperature = (data) => {
+    if (temperatureUnit === 'celsius') {
+      return `${data?.current?.temp_c}°C`;
+    } else {
+      return `${data?.current?.temp_f}°F`;
+    }
+  };
+
+  // Helper function to display wind speed based on user preference
+  const displayWindSpeed = (data) => {
+    if (windUnit === 'kmh') {
+      return `${data?.current?.wind_kph} km/h`;
+    } else {
+      return `${data?.current?.wind_mph} mph`;
+    }
+  };
+
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <Stack tokens={{ padding: 20 }}>
         <Header darkMode={darkMode} onToggleDarkMode={handleToggleDarkMode} />
 
-        <SearchForm 
-          searchCity={searchCity}
-          setSearchCity={setSearchCity}
-          handleSearch={handleSearch}
-          getCurrentLocationWeather={() => {
-            alert('En una implementación real, esto obtendría tu ubicación actual.');
-            setCity('Tu ubicación');
-          }}
+        
+
+<Stack horizontal horizontalAlign="space-between" verticalAlign="center">
+  <SearchForm 
+    searchCity={searchCity}
+    setSearchCity={setSearchCity}
+    handleSearch={handleSearch}
+    getCurrentLocationWeather={() => {
+      alert('En una implementación real, esto obtendría tu ubicación actual.');
+      setCity('Your Location');
+    }}
+  />
+  <IconButton
+    iconProps={{ iconName: 'GlobalNavButton' }}
+    onClick={() => setIsSettingsPanelOpen(true)}
+    styles={{
+      root: {
+        margin: '0 10px'
+      }
+    }}
+  />
+</Stack>
+
+  <Panel
+    isOpen={isSettingsPanelOpen}
+    onDismiss={() => setIsSettingsPanelOpen(false)}
+    headerText="Configuración"
+    type={PanelType.medium}
+    closeButtonAriaLabel="Cerrar"
+  >
+    <Stack tokens={{ childrenGap: 20, padding: 10 }}>
+      <Stack>
+        <Text variant="large">Unidad de temperatura</Text>
+        <ChoiceGroup 
+          selectedKey={temperatureUnit} 
+          options={temperatureOptions} 
+          onChange={handleTemperatureUnitChange} 
         />
-
-        {/* Controles de unidades */}
-        <Stack horizontal tokens={{ childrenGap: 20, padding: 10 }}>
-          <Stack>
-            <Text>Unidad de temperatura</Text>
-            <ChoiceGroup 
-              selectedKey={temperatureUnit} 
-              options={temperatureOptions} 
-              onChange={handleTemperatureUnitChange} 
-            />
-          </Stack>
-          <Stack>
-            <Text>Unidad de viento</Text>
-            <ChoiceGroup 
-              selectedKey={windUnit} 
-              options={windOptions} 
-              onChange={handleWindUnitChange} 
-            />
-          </Stack>
-          <Stack>
-            <Text>Opciones</Text>
-            <Toggle 
-              label={`Comparar con ${comparisonCity}`}
-              checked={showComparison} 
-              onChange={toggleComparison}
-            />
-            {weatherData?.hourly?.some(h => h.uvi !== undefined) && (
-              <Toggle 
-                label="Mostrar índice UV por hora"
-                checked={showUVPanel} 
-                onChange={toggleUVPanel}
-              />
-            )}
-          </Stack>
-        </Stack>
-
+      </Stack>
+      <Stack>
+        <Text variant="large">Unidad de viento</Text>
+        <ChoiceGroup 
+          selectedKey={windUnit} 
+          options={windOptions} 
+          onChange={handleWindUnitChange} 
+        />
+      </Stack>
+      <Stack>
+        <Text variant="large">Opciones adicionales</Text>
+        <Toggle 
+          label={`Comparar con ${comparisonCity}`}
+          checked={showComparison} 
+          onChange={toggleComparison}
+        />
+        {weatherData?.current?.uv !== undefined && (
+          <Toggle 
+            label="Mostrar índice UV por hora"
+            checked={showUVPanel} 
+            onChange={toggleUVPanel}
+          />
+        )}
+      </Stack>
+    </Stack>
+  </Panel>
         {/* Comparación con otra ciudad */}
         {showComparison && (
           <Stack style={{ marginTop: 10, marginBottom: 20 }}>
@@ -207,14 +345,18 @@ const WeatherApp = () => {
               <Text style={{ color: 'red' }}>{comparisonError}</Text>
             ) : comparisonData ? (
               <Stack horizontal tokens={{ childrenGap: 20 }}>
-                {/* Aquí iría el componente de comparación - ejemplo simple */}
+                {/* Datos de comparación básicos */}
                 <Stack>
                   <Text variant="medium">{city}</Text>
-                  <Text>Temperatura: {convertTemp(weatherData?.current?.temp)}°{temperatureUnit === 'celsius' ? 'C' : 'F'}</Text>
+                  <Text>Temperatura: {displayTemperature(weatherData)}</Text>
+                  <Text>Viento: {displayWindSpeed(weatherData)}</Text>
+                  <Text>Humedad: {weatherData?.current?.humidity}%</Text>
                 </Stack>
                 <Stack>
                   <Text variant="medium">{comparisonCity}</Text>
-                  <Text>Temperatura: {convertTemp(comparisonData?.current?.temp)}°{temperatureUnit === 'celsius' ? 'C' : 'F'}</Text>
+                  <Text>Temperatura: {displayTemperature(comparisonData)}</Text>
+                  <Text>Viento: {displayWindSpeed(comparisonData)}</Text>
+                  <Text>Humedad: {comparisonData?.current?.humidity}%</Text>
                 </Stack>
               </Stack>
             ) : null}
@@ -227,28 +369,42 @@ const WeatherApp = () => {
           <Text variant="large" style={{ color: 'red' }}>{error}</Text>
         ) : weatherData && (
           <>
-            <WeatherInfo 
-              weatherData={weatherData} 
-              temperatureUnit={temperatureUnit} 
-              windUnit={windUnit} 
-              convertTemp={convertTemp} 
-              convertWind={convertWind} 
-            />
+                      <WeatherInfo weatherData={weatherData} darkMode={darkMode} />
 
-            <Stack style={{ marginTop: 20 }}>
-              <Text variant="large">Pronóstico por Hora</Text>
-              <Stack horizontal>
-                <IconButton iconProps={{ iconName: 'ChevronLeft' }} onClick={scrollLeft} />
-                <div ref={hourlyForecastRef} style={{ overflowX: 'auto', display: 'flex' }}>
-                  <HourlyForecast 
-                    hourlyData={weatherData?.hourly || []} 
-                    convertTemp={convertTemp}
-                    temperatureUnit={temperatureUnit}
-                  />
-                </div>
-                <IconButton iconProps={{ iconName: 'ChevronRight' }} onClick={scrollRight} />
-              </Stack>
-            </Stack>
+              
+              
+
+                      <Stack style={{ marginTop: 20 }}>
+  <Text variant="large">Pronóstico por Hora</Text>
+  <Stack horizontal>
+    <IconButton 
+      iconProps={{ iconName: 'ChevronLeft' }} 
+      onClick={scrollLeft}
+      styles={{
+        root: {
+          height: 'fit-content',
+          alignSelf: 'center'
+        }
+      }}
+    />
+    <HourlyForecast 
+      ref={hourlyForecastRef}
+      hourlyData={weatherData?.hourly || []} 
+      convertTemp={convertTemp}
+      temperatureUnit={temperatureUnit}
+    />
+    <IconButton 
+      iconProps={{ iconName: 'ChevronRight' }} 
+      onClick={scrollRight}
+      styles={{
+        root: {
+          height: 'fit-content',
+          alignSelf: 'center'
+        }
+      }}
+    />
+  </Stack>
+</Stack>
 
             <Stack style={{ marginTop: 20 }}>
               <Text variant="large">Pronóstico a 5 días</Text>
@@ -270,7 +426,7 @@ const WeatherApp = () => {
               windUnit={windUnit}
             />
 
-            {weatherData?.current?.uvi !== undefined && <UVScale uvIndex={weatherData.current.uvi} />}
+            {weatherData?.current?.uv !== undefined && <UVScale uvIndex={weatherData.current.uv} />}
             
             {showUVPanel && weatherData?.hourly && (
               <UVHourly 
