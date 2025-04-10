@@ -9,14 +9,22 @@ body {
     min-height: 100vh;
     padding: 20px;
   }
-  /* styles.css */
-/* styles.css */
-
+  .hourly-forecast-container {
+    -ms-overflow-style: none;  /* IE y Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+  
+  .hourly-forecast-container::-webkit-scrollbar {
+    display: none;             /* Chrome, Safari y Opera */
+  }
 /* Contenedor principal */
 .weather-app-container {
     padding: 20px;
     max-width: 800px;
     margin: 0 auto;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
   }
   
   /* Contenedor de carga */
