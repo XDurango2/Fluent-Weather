@@ -24,23 +24,20 @@ export const airQualityIconMap = {
 export const weatherIconMap = {
   'Sunny': 'Sunny',
   'Partly cloudy': 'PartlyCloudyDay',
-  'Cloudy': 'CloudyWeather',
+  'Cloudy': 'CloudWeather',
   'Overcast': 'Cloudy',
-  'Mist': 'Haze',
+  'Mist': 'Fog',
   'Patchy rain possible': 'WeatherRainShower',
   'Light rain': 'WeatherDrizzle',
   'Moderate rain': 'WeatherRain',
   'Heavy rain': 'WeatherRainShowersDay',
-  'Thunder': 'WeatherStormShowers',
-  'Snow': 'WeatherSnow',
+  'Thunder': 'Thunderstorms',
+  'Snow': 'Snow',
   'Light snow': 'WeatherFlurries',
   'Heavy snow': 'WeatherSnow',
-  'Clear': 'WeatherMoon',
-  'Fog': 'FoggyDay',
-  'Light drizzle': 'WeatherDrizzle',
-  'Light rain shower': 'WeatherRainShower',
-  'Moderate or heavy rain shower': 'WeatherRainShowersDay',
-  'Thundery outbreaks possible': 'WeatherStormShowers'
+  'Clear': 'ClearNight',
+  'Fog': 'Fog',
+  'Windy': 'Squalls',
 };
 
 

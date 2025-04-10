@@ -45,15 +45,29 @@ const generateForecastData = (baseData) => {
   const hourly = Array.from({ length: 24 }, (_, i) => ({
     dt: new Date().setHours(new Date().getHours() + i),
     temp: baseData.current.temp_c + Math.sin(i/3) * 5,
+    temp_c: baseData.current.temp_c + Math.sin(i/3) * 5,
+    temp_f: (baseData.current.temp_c + Math.sin(i/3) * 5) * 9/5 + 32,
     weather: [{ 
       description: baseData.current.condition.text,
       icon: baseData.current.condition.icon
     }],
     humidity: Math.min(100, Math.max(30, baseData.current.humidity + Math.sin(i/4) * 10)),
-    wind_speed: baseData.current.wind_kph + Math.sin(i/4) * 5,
-    wind_deg: ((baseData.current.wind_degree || 0) + i * 15) % 360
+    wind_kph: baseData.current.wind_kph + Math.sin(i/4) * 5,
+    wind_mph: (baseData.current.wind_kph + Math.sin(i/4) * 5) * 0.621371,
+    wind_degree: ((baseData.current.wind_degree || 0) + i * 15) % 360,
+    wind_dir: baseData.current.wind_dir,
+    pressure_mb: baseData.current.pressure_mb,
+    precip_mm: Math.max(0, Math.sin(i/6) * 2),
+    precip_in: Math.max(0, Math.sin(i/6) * 2) * 0.0393701,
+    vis_km: 10,
+    vis_miles: 6.21371,
+    cloud: Math.min(100, Math.max(0, baseData.current.cloud + Math.sin(i/4) * 20)),
+    feelslike_c: baseData.current.feelslike_c + Math.sin(i/3) * 3,
+    feelslike_f: (baseData.current.feelslike_c + Math.sin(i/3) * 3) * 9/5 + 32,
+    chance_of_rain: Math.min(100, Math.max(0, Math.sin(i/6) * 50))
   }));
 
+  // ...existing daily forecast generation...
   // Generate daily forecast data
   const daily = Array.from({ length: 7 }, (_, i) => ({
     dt: new Date().setDate(new Date().getDate() + i),
@@ -77,6 +91,22 @@ const generateForecastData = (baseData) => {
     daily
   };
 };
+
+// CSS for theme transition animations
+const getGlobalStyles = (darkMode) => {
+  return {
+    rootStyle: {
+      transition: 'background-color 0.5s ease, color 0.5s ease',
+      backgroundColor: darkMode ? darkTheme.palette.neutralLighterAlt : lightTheme.palette.neutralLighterAlt,
+      color: darkMode ? darkTheme.palette.neutralPrimary : lightTheme.palette.neutralPrimary,
+      minHeight: '100vh',
+    },
+    contentStyle: {
+      transition: 'all 0.5s ease',
+    }
+  };
+};
+
 const WeatherApp = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -95,6 +125,10 @@ const WeatherApp = () => {
   const [comparisonLoading, setComparisonLoading] = useState(false);
   const [comparisonError, setComparisonError] = useState(null);
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
+  
+  // Get animated styles
+  const globalStyles = getGlobalStyles(darkMode);
+  
   const scrollLeft = () => {
     if (hourlyForecastRef.current) {
       const scrollWidth = hourlyForecastRef.current.scrollWidth;
@@ -268,175 +302,228 @@ const WeatherApp = () => {
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <Stack tokens={{ padding: 20 }}>
-        <Header darkMode={darkMode} onToggleDarkMode={handleToggleDarkMode} />
+      <div style={globalStyles.rootStyle}>
+        <Stack tokens={{ padding: 20 }} style={globalStyles.contentStyle}>
+          <Header darkMode={darkMode} />
 
-        
+          <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
+            <SearchForm 
+              searchCity={searchCity}
+              setSearchCity={setSearchCity}
+              handleSearch={handleSearch}
+              getCurrentLocationWeather={() => {
+                alert('En una implementación real, esto obtendría tu ubicación actual.');
+                setCity('Your Location');
+              }}
+            />
+            <IconButton
+              iconProps={{ iconName: 'GlobalNavButton' }}
+              onClick={() => setIsSettingsPanelOpen(true)}
+              styles={{
+                root: {
+                  margin: '0 10px',
+                  transition: 'background-color 0.3s ease',
+                }
+              }}
+            />
+          </Stack>
 
-<Stack horizontal horizontalAlign="space-between" verticalAlign="center">
-  <SearchForm 
-    searchCity={searchCity}
-    setSearchCity={setSearchCity}
-    handleSearch={handleSearch}
-    getCurrentLocationWeather={() => {
-      alert('En una implementación real, esto obtendría tu ubicación actual.');
-      setCity('Your Location');
-    }}
-  />
-  <IconButton
-    iconProps={{ iconName: 'GlobalNavButton' }}
-    onClick={() => setIsSettingsPanelOpen(true)}
-    styles={{
-      root: {
-        margin: '0 10px'
-      }
-    }}
-  />
-</Stack>
-
-  <Panel
-    isOpen={isSettingsPanelOpen}
-    onDismiss={() => setIsSettingsPanelOpen(false)}
-    headerText="Configuración"
-    type={PanelType.medium}
-    closeButtonAriaLabel="Cerrar"
-  >
-    <Stack tokens={{ childrenGap: 20, padding: 10 }}>
-      <Stack>
-        <Text variant="large">Unidad de temperatura</Text>
-        <ChoiceGroup 
-          selectedKey={temperatureUnit} 
-          options={temperatureOptions} 
-          onChange={handleTemperatureUnitChange} 
-        />
-      </Stack>
-      <Stack>
-        <Text variant="large">Unidad de viento</Text>
-        <ChoiceGroup 
-          selectedKey={windUnit} 
-          options={windOptions} 
-          onChange={handleWindUnitChange} 
-        />
-      </Stack>
-      <Stack>
-        <Text variant="large">Opciones adicionales</Text>
-        <Toggle 
-          label={`Comparar con ${comparisonCity}`}
-          checked={showComparison} 
-          onChange={toggleComparison}
-        />
-        {weatherData?.current?.uv !== undefined && (
-          <Toggle 
-            label="Mostrar índice UV por hora"
-            checked={showUVPanel} 
-            onChange={toggleUVPanel}
-          />
-        )}
-      </Stack>
-    </Stack>
-  </Panel>
-        {/* Comparación con otra ciudad */}
-        {showComparison && (
-          <Stack style={{ marginTop: 10, marginBottom: 20 }}>
-            <Text variant="large">Comparación con {comparisonCity}</Text>
-            {comparisonLoading ? (
-              <Spinner size={SpinnerSize.medium} label="Cargando datos de comparación..." />
-            ) : comparisonError ? (
-              <Text style={{ color: 'red' }}>{comparisonError}</Text>
-            ) : comparisonData ? (
-              <Stack horizontal tokens={{ childrenGap: 20 }}>
-                {/* Datos de comparación básicos */}
-                <Stack>
-                  <Text variant="medium">{city}</Text>
-                  <Text>Temperatura: {displayTemperature(weatherData)}</Text>
-                  <Text>Viento: {displayWindSpeed(weatherData)}</Text>
-                  <Text>Humedad: {weatherData?.current?.humidity}%</Text>
+          <Panel
+            isOpen={isSettingsPanelOpen}
+            onDismiss={() => setIsSettingsPanelOpen(false)}
+            headerText="Configuración"
+            type={PanelType.medium}
+            closeButtonAriaLabel="Cerrar"
+            styles={{
+              main: {
+                transition: 'background-color 0.5s ease',
+              },
+              content: {
+                transition: 'color 0.5s ease',
+              }
+            }}
+          >
+            <Stack tokens={{ childrenGap: 20, padding: 10 }}>
+              <Stack>
+                <Text variant="large">Tema</Text>
+                <Toggle 
+                  label={darkMode ? "Modo oscuro" : "Modo claro"}
+                  checked={darkMode} 
+                  onChange={handleToggleDarkMode}
+                  styles={{
+                    root: {
+                      marginTop: 10,
+                    },
+                    pill: {
+                      transition: 'background-color 0.3s ease',
+                    }
+                  }}
+                  onText="Activado"
+                  offText="Desactivado"
+                />
+              </Stack>
+              
+              <Stack>
+                <Text variant="large">Unidad de temperatura</Text>
+                <ChoiceGroup 
+                  selectedKey={temperatureUnit} 
+                  options={temperatureOptions} 
+                  onChange={handleTemperatureUnitChange} 
+                />
+              </Stack>
+              <Stack>
+                <Text variant="large">Unidad de viento</Text>
+                <ChoiceGroup 
+                  selectedKey={windUnit} 
+                  options={windOptions} 
+                  onChange={handleWindUnitChange} 
+                />
+              </Stack>
+              <Stack>
+                <Text variant="large">Opciones adicionales</Text>
+                <Toggle 
+                  label={`Comparar con ${comparisonCity}`}
+                  checked={showComparison} 
+                  onChange={toggleComparison}
+                  styles={{
+                    pill: {
+                      transition: 'background-color 0.3s ease',
+                    }
+                  }}
+                />
+                {weatherData?.current?.uv !== undefined && (
+                  <Toggle 
+                    label="Mostrar índice UV por hora"
+                    checked={showUVPanel} 
+                    onChange={toggleUVPanel}
+                    styles={{
+                      pill: {
+                        transition: 'background-color 0.3s ease',
+                      }
+                    }}
+                  />
+                )}
+              </Stack>
+            </Stack>
+          </Panel>
+          
+          {/* Comparación con otra ciudad */}
+          {showComparison && (
+            <Stack style={{ marginTop: 10, marginBottom: 20, transition: 'all 0.5s ease' }}>
+              <Text variant="large">Comparación con {comparisonCity}</Text>
+              {comparisonLoading ? (
+                <Spinner size={SpinnerSize.medium} label="Cargando datos de comparación..." />
+              ) : comparisonError ? (
+                <Text style={{ color: 'red' }}>{comparisonError}</Text>
+              ) : comparisonData ? (
+                <Stack horizontal tokens={{ childrenGap: 20 }}>
+                  {/* Datos de comparación básicos */}
+                  <Stack>
+                    <Text variant="medium">{city}</Text>
+                    <Text>Temperatura: {displayTemperature(weatherData)}</Text>
+                    <Text>Viento: {displayWindSpeed(weatherData)}</Text>
+                    <Text>Humedad: {weatherData?.current?.humidity}%</Text>
+                  </Stack>
+                  <Stack>
+                    <Text variant="medium">{comparisonCity}</Text>
+                    <Text>Temperatura: {displayTemperature(comparisonData)}</Text>
+                    <Text>Viento: {displayWindSpeed(comparisonData)}</Text>
+                    <Text>Humedad: {comparisonData?.current?.humidity}%</Text>
+                  </Stack>
                 </Stack>
-                <Stack>
-                  <Text variant="medium">{comparisonCity}</Text>
-                  <Text>Temperatura: {displayTemperature(comparisonData)}</Text>
-                  <Text>Viento: {displayWindSpeed(comparisonData)}</Text>
-                  <Text>Humedad: {comparisonData?.current?.humidity}%</Text>
+              ) : null}
+            </Stack>
+          )}
+
+          {loading ? (
+            <Spinner size={SpinnerSize.large} label="Cargando datos del clima..." />
+          ) : error ? (
+            <Text variant="large" style={{ color: 'red' }}>{error}</Text>
+          ) : weatherData && (
+            <>
+              <div style={{ transition: 'all 0.5s ease' }}>
+                <WeatherInfo 
+                  weatherData={weatherData} 
+                  darkMode={darkMode} 
+                  temperatureUnit={temperatureUnit}
+                  windUnit={windUnit}
+                  convertTemp={convertTemp}
+                  convertWind={convertWind}
+                />
+              </div>
+
+              <Stack style={{ marginTop: 20, transition: 'all 0.5s ease' }}>
+                <Text variant="large">Pronóstico por Hora</Text>
+                <Stack horizontal>
+                  <IconButton 
+                    iconProps={{ iconName: 'ChevronLeft' }} 
+                    onClick={scrollLeft}
+                    styles={{
+                      root: {
+                        height: 'fit-content',
+                        alignSelf: 'center',
+                        transition: 'background-color 0.3s ease',
+                      }
+                    }}
+                  />
+                  <HourlyForecast 
+                    ref={hourlyForecastRef}
+                    hourlyData={weatherData?.hourly || []} 
+                    convertTemp={convertTemp}
+                    temperatureUnit={temperatureUnit}
+                    windUnit={windUnit}
+                    darkMode={darkMode}
+                  />
+                  <IconButton 
+                    iconProps={{ iconName: 'ChevronRight' }} 
+                    onClick={scrollRight}
+                    styles={{
+                      root: {
+                        height: 'fit-content',
+                        alignSelf: 'center',
+                        transition: 'background-color 0.3s ease',
+                      }
+                    }}
+                  />
                 </Stack>
               </Stack>
-            ) : null}
-          </Stack>
-        )}
 
-        {loading ? (
-          <Spinner size={SpinnerSize.large} label="Cargando datos del clima..." />
-        ) : error ? (
-          <Text variant="large" style={{ color: 'red' }}>{error}</Text>
-        ) : weatherData && (
-          <>
-                      <WeatherInfo weatherData={weatherData} darkMode={darkMode} />
+              <Stack style={{ marginTop: 20, transition: 'all 0.5s ease' }}>
+                <Text variant="large">Pronóstico a 5 días</Text>
+                <ForecastList 
+                  forecast={weatherData?.daily.slice(0, 5) || []} 
+                  handleForecastClick={setSelectedForecast} 
+                  convertTemp={convertTemp}
+                  temperatureUnit={temperatureUnit}
+                />
+              </Stack>
 
-              
-              
-
-                      <Stack style={{ marginTop: 20 }}>
-  <Text variant="large">Pronóstico por Hora</Text>
-  <Stack horizontal>
-    <IconButton 
-      iconProps={{ iconName: 'ChevronLeft' }} 
-      onClick={scrollLeft}
-      styles={{
-        root: {
-          height: 'fit-content',
-          alignSelf: 'center'
-        }
-      }}
-    />
-    <HourlyForecast 
-      ref={hourlyForecastRef}
-      hourlyData={weatherData?.hourly || []} 
-      convertTemp={convertTemp}
-      temperatureUnit={temperatureUnit}
-    />
-    <IconButton 
-      iconProps={{ iconName: 'ChevronRight' }} 
-      onClick={scrollRight}
-      styles={{
-        root: {
-          height: 'fit-content',
-          alignSelf: 'center'
-        }
-      }}
-    />
-  </Stack>
-</Stack>
-
-            <Stack style={{ marginTop: 20 }}>
-              <Text variant="large">Pronóstico a 5 días</Text>
-              <ForecastList 
-                forecast={weatherData?.daily.slice(0, 5) || []} 
-                handleForecastClick={setSelectedForecast} 
-                convertTemp={convertTemp}
-                temperatureUnit={temperatureUnit}
+              <ForecastDetailPanel 
+                forecast={selectedForecast} 
+                isOpen={!!selectedForecast} 
+                onDismiss={() => setSelectedForecast(null)} 
+                convertTemp={convertTemp} 
+                temperatureUnit={temperatureUnit} 
+                convertWind={convertWind} 
+                windUnit={windUnit}
               />
-            </Stack>
 
-            <ForecastDetailPanel 
-              forecast={selectedForecast} 
-              isOpen={!!selectedForecast} 
-              onDismiss={() => setSelectedForecast(null)} 
-              convertTemp={convertTemp} 
-              temperatureUnit={temperatureUnit} 
-              convertWind={convertWind} 
-              windUnit={windUnit}
-            />
-
-            {weatherData?.current?.uv !== undefined && <UVScale uvIndex={weatherData.current.uv} />}
-            
-            {showUVPanel && weatherData?.hourly && (
-              <UVHourly 
-                data={weatherData.hourly} 
-                title="Índice UV por hora" 
-              />
-            )}
-          </>
-        )}
-      </Stack>
+              <div style={{ transition: 'all 0.5s ease' }}>
+                {weatherData?.current?.uv !== undefined && <UVScale uvIndex={weatherData.current.uv} />}
+              </div>
+              
+              {showUVPanel && weatherData?.hourly && (
+                <div style={{ transition: 'all 0.5s ease' }}>
+                  <UVHourly 
+                    data={weatherData.hourly} 
+                    title="Índice UV por hora" 
+                  />
+                </div>
+              )}
+            </>
+          )}
+        </Stack>
+      </div>
     </ThemeProvider>
   );
 };

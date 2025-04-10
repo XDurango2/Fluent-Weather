@@ -7,7 +7,14 @@ import {
   getAirQualityLabel 
 } from './utils';
 
-const WeatherInfo = ({ weatherData, darkMode }) => {
+const WeatherInfo = ({ 
+  weatherData, 
+  darkMode, 
+  temperatureUnit, 
+  windUnit,
+  convertTemp,
+  convertWind 
+}) => {
   const [isAirQualityPanelOpen, setIsAirQualityPanelOpen] = useState(false);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
 
@@ -27,7 +34,9 @@ const WeatherInfo = ({ weatherData, darkMode }) => {
       <Stack tokens={{ childrenGap: 15 }}>
         <Stack horizontal horizontalAlign="space-between">
           <Text>Sensación térmica:</Text>
-          <Text>{current.feelslike_c}°C</Text>
+          <Text>
+            {convertTemp(current.feelslike_c)}°{temperatureUnit === 'celsius' ? 'C' : 'F'}
+          </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
           <Text>Humedad:</Text>
@@ -39,7 +48,9 @@ const WeatherInfo = ({ weatherData, darkMode }) => {
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
           <Text>Visibilidad:</Text>
-          <Text>{current.vis_km} km</Text>
+          <Text>
+            {windUnit === 'kmh' ? `${current.vis_km} km` : `${current.vis_miles} mi`}
+          </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
           <Text>Índice UV:</Text>
@@ -47,7 +58,9 @@ const WeatherInfo = ({ weatherData, darkMode }) => {
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
           <Text>Precipitación:</Text>
-          <Text>{current.precip_mm} mm</Text>
+          <Text>
+            {windUnit === 'kmh' ? `${current.precip_mm} mm` : `${current.precip_in} in`}
+          </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
           <Text>Nubosidad:</Text>
@@ -55,7 +68,11 @@ const WeatherInfo = ({ weatherData, darkMode }) => {
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
           <Text>Ráfagas de viento:</Text>
-          <Text>{current.gust_kph} km/h</Text>
+          <Text>
+            {windUnit === 'kmh' ? 
+              `${current.gust_kph} km/h` : 
+              `${current.gust_mph} mph`}
+          </Text>
         </Stack>
       </Stack>
     );
@@ -113,7 +130,9 @@ const WeatherInfo = ({ weatherData, darkMode }) => {
         <Stack>
           <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }}>
             <Text style={{ fontSize: 48, fontWeight: 'bold' }}>
-              {weatherData.current.temp_c}°C
+            {temperatureUnit === 'celsius' ? 
+                `${weatherData.current.temp_c}°C` : 
+                `${weatherData.current.temp_f}°F`}
             </Text>
             <Icon 
               iconName={getWeatherIcon(weatherData.current.condition.text)} 
@@ -155,7 +174,9 @@ const WeatherInfo = ({ weatherData, darkMode }) => {
               }} 
             />
             <Text>
-              {weatherData.current.wind_kph} km/h
+            {windUnit === 'kmh' ? 
+                `${weatherData.current.wind_kph} km/h` : 
+                `${weatherData.current.wind_mph} mph`}
             </Text>
           </Stack>
 {weatherData.current.air_quality && (
