@@ -6,6 +6,16 @@ import { weatherIconMap } from './utils';
 const HourlyForecast = forwardRef(({ hourlyData = [], convertTemp, temperatureUnit, windUnit, darkMode }, ref) => {
   const [selectedHour, setSelectedHour] = useState(null);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
+
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    // Parse the time string from the API format "YYYY-MM-DD HH:mm"
+    const [date, time] = timeString.split(' ');
+    const [hours, minutes] = time.split(':');
+    
+    return new Date().setHours(hours, minutes, 0, 0);
+  };
+
   const renderHourDetails = () => {
     if (!selectedHour) return null;
 
@@ -102,8 +112,11 @@ const HourlyForecast = forwardRef(({ hourlyData = [], convertTemp, temperatureUn
             }}
           >
             <Text variant="medium" style={{ fontWeight: 'bold' }}>
-              {new Date(hour.dt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </Text>
+              {new Date(formatTime(hour.time)).toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+              })}</Text>
             <Icon 
               iconName={weatherIconMap[hour.weather[0].description] || 'Weather'}
               style={{ 
@@ -133,9 +146,10 @@ const HourlyForecast = forwardRef(({ hourlyData = [], convertTemp, temperatureUn
         isOpen={isDetailsPanelOpen}
         onDismiss={() => setIsDetailsPanelOpen(false)}
         headerText={selectedHour ? 
-          `Pronóstico para las ${new Date(selectedHour.dt).toLocaleTimeString([], { 
+          `Pronóstico para las ${new Date(formatTime(selectedHour.time)).toLocaleTimeString([], { 
             hour: '2-digit', 
-            minute: '2-digit' 
+            minute: '2-digit',
+            hour12: true
           })}` : 
           'Detalles del pronóstico'
         }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import axios from 'axios';
 import { 
   IconButton, 
   Text, 
@@ -26,71 +27,6 @@ import mockWeatherDataLondon from './components/mockData.json';
 
 initializeIcons();
 
-// Function to get weather data based on city
-const getWeatherData = (city) => {
-  // In a real application, this would make an API call based on the city name
-  // For now, we're using the static JSON data for all cities
-  // You could extend this with more mock data files for different cities
-  return {
-    ...mockWeatherDataLondon,
-    location: {
-      ...mockWeatherDataLondon.location,
-      name: city || mockWeatherDataLondon.location.name
-    }
-  };
-};
-
-const generateForecastData = (baseData) => {
-  // Generate hourly forecast data
-  const hourly = Array.from({ length: 24 }, (_, i) => ({
-    dt: new Date().setHours(new Date().getHours() + i),
-    temp: baseData.current.temp_c + Math.sin(i/3) * 5,
-    temp_c: baseData.current.temp_c + Math.sin(i/3) * 5,
-    temp_f: (baseData.current.temp_c + Math.sin(i/3) * 5) * 9/5 + 32,
-    weather: [{ 
-      description: baseData.current.condition.text,
-      icon: baseData.current.condition.icon
-    }],
-    humidity: Math.min(100, Math.max(30, baseData.current.humidity + Math.sin(i/4) * 10)),
-    wind_kph: baseData.current.wind_kph + Math.sin(i/4) * 5,
-    wind_mph: (baseData.current.wind_kph + Math.sin(i/4) * 5) * 0.621371,
-    wind_degree: ((baseData.current.wind_degree || 0) + i * 15) % 360,
-    wind_dir: baseData.current.wind_dir,
-    pressure_mb: baseData.current.pressure_mb,
-    precip_mm: Math.max(0, Math.sin(i/6) * 2),
-    precip_in: Math.max(0, Math.sin(i/6) * 2) * 0.0393701,
-    vis_km: 10,
-    vis_miles: 6.21371,
-    cloud: Math.min(100, Math.max(0, baseData.current.cloud + Math.sin(i/4) * 20)),
-    feelslike_c: baseData.current.feelslike_c + Math.sin(i/3) * 3,
-    feelslike_f: (baseData.current.feelslike_c + Math.sin(i/3) * 3) * 9/5 + 32,
-    chance_of_rain: Math.min(100, Math.max(0, Math.sin(i/6) * 50))
-  }));
-
-  // ...existing daily forecast generation...
-  // Generate daily forecast data
-  const daily = Array.from({ length: 7 }, (_, i) => ({
-    dt: new Date().setDate(new Date().getDate() + i),
-    temp: {
-      min: baseData.current.temp_c - 5 + Math.sin(i/2) * 3,
-      max: baseData.current.temp_c + 5 + Math.sin(i/2) * 4
-    },
-    weather: [{ 
-      description: baseData.current.condition.text,
-      icon: baseData.current.condition.icon
-    }],
-    humidity: Math.min(100, Math.max(30, baseData.current.humidity + Math.sin(i/3) * 15)),
-    wind_speed: baseData.current.wind_kph + Math.sin(i/3) * 8,
-    wind_deg: ((baseData.current.wind_degree || 0) + i * 45) % 360,
-    pressure: baseData.current.pressure_mb
-  }));
-
-  return {
-    ...baseData,
-    hourly,
-    daily
-  };
-};
 
 // CSS for theme transition animations
 const getGlobalStyles = (darkMode) => {
@@ -126,6 +62,86 @@ const WeatherApp = () => {
   const [comparisonError, setComparisonError] = useState(null);
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
   
+  const getWeatherData = async (city) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:5000/api/weather`, {
+        params: { city }
+      });
+      
+      if (response.data && response.status === 200) {
+        const enrichedData = generateForecastData(response.data);
+        setWeatherData(enrichedData);
+        setError(null);
+      } else {
+        throw new Error('Invalid response from weather API');
+      }
+    }catch (error) {
+    console.error('Error fetching weather data:', error);
+    throw new Error(error.response?.data?.error || 'Error fetching weather data');
+  }
+};
+
+const generateForecastData = (baseData) => {
+  if (!baseData || !baseData.forecast || !baseData.forecast.forecastday) {
+    throw new Error('Invalid data structure');
+  }
+
+  // Generate hourly forecast data from the API response
+  const hourly = baseData.forecast.forecastday[0].hour.map(hour => ({
+    dt: new Date(hour.time).getTime(),
+    temp: hour.temp_c,
+    temp_c: hour.temp_c,
+    temp_f: hour.temp_f,
+    weather: [{ 
+      description: hour.condition.text,
+      icon: hour.condition.icon.replace("//cdn", "https://cdn")
+    }],
+    humidity: hour.humidity,
+    wind_kph: hour.wind_kph,
+    wind_mph: hour.wind_mph,
+    wind_degree: hour.wind_degree,
+    wind_dir: hour.wind_dir,
+    pressure_mb: hour.pressure_mb,
+    precip_mm: hour.precip_mm,
+    cloud: hour.cloud,
+    feelslike_c: hour.feelslike_c,
+    feelslike_f: hour.feelslike_f,
+    chance_of_rain: hour.chance_of_rain,
+    uv: hour.uv
+  }));
+
+  // Filter to show only future hours
+  const now = new Date().getTime();
+  const filteredHourly = hourly.filter(hour => hour.dt >= now);
+
+  return {
+    ...baseData,
+    hourly: filteredHourly.slice(0, 24), // Limit to next 24 hours
+    daily: baseData.forecast.forecastday.map(day => ({
+      dt: new Date(day.date).getTime(),
+      temp: {
+        min: day.day.mintemp_c,
+        max: day.day.maxtemp_c
+      },
+      temp_f: {
+        min: day.day.mintemp_f,
+        max: day.day.maxtemp_f
+      },
+      weather: [{ 
+        description: day.day.condition.text,
+        icon: day.day.condition.icon.replace("//cdn", "https://cdn")
+      }],
+      humidity: day.day.avghumidity,
+      wind_speed: day.day.maxwind_kph,
+      wind_mph: day.day.maxwind_mph,
+      precipitation: day.day.totalprecip_mm,
+      uv: day.day.uv
+    }))
+  };
+};
+
+
   // Get animated styles
   const globalStyles = getGlobalStyles(darkMode);
   

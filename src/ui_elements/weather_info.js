@@ -6,6 +6,7 @@ import {
   getWindDirectionAngle, 
   getAirQualityLabel 
 } from './utils';
+import CityBackground from '../components/cityBackground.js'; // Ajusta el path si es necesario
 
 const WeatherInfo = ({ 
   weatherData, 
@@ -21,6 +22,7 @@ const WeatherInfo = ({
   if (!weatherData) {
     return <Text>No weather data available</Text>;
   }
+  
 
   const getWeatherIcon = (condition) => {
     //console.log('Weather condition:', condition); // Para depuración
@@ -109,20 +111,27 @@ const WeatherInfo = ({
     );
   };
   return (
-    <Stack style={{ 
-      padding: 20, 
-      backgroundColor: darkMode ? '#202020' : '#F3F2F1', 
+    
+    <CityBackground
+    cityName={weatherData.location.name}
+    darkMode={darkMode}
+    ><Stack 
+    style={{
+      padding: 20,
+      backgroundColor: 'rgba(0, 0, 0, 0.3)',  // Fondo semitransparente
       borderRadius: 4,
       color: darkMode ? '#ffffff' : '#000000',
-      position: 'relative'
-    }}>
+      position: 'relative',
+      zIndex: 1,  // Asegúrate de que esté encima del fondo
+    }}
+  >
       <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }}>
-        <Icon 
-          iconName="Location" 
-          style={{ fontSize: 20, color: darkMode ? '#00b7ff' : '#0078d4' }} 
-        />
-        <Text variant="xLarge">
-          {weatherData.location.name}, {weatherData.location.country}
+      <Icon 
+        iconName="Location" 
+        style={{ fontSize: 20, color: darkMode ? '#00b7ff' : '#0078d4' }} 
+      />
+      <Text variant="xLarge">
+        {weatherData.location.name}, {weatherData.location.country}
         </Text>
       </Stack>
 
@@ -235,8 +244,12 @@ const WeatherInfo = ({
             {renderWeatherDetails()}
           </Panel>
         </Stack>
+        
       </Stack>
+      
     </Stack>
+    </CityBackground>
+
   );
 };
 
