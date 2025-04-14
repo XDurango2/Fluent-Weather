@@ -1,19 +1,39 @@
-import React, { forwardRef,useState } from 'react';
-import { Stack, Text, Icon,Panel,PanelType } from '@fluentui/react';
+import React, { forwardRef, useState } from 'react';
+import { Stack, Text, Icon, Panel, PanelType } from '@fluentui/react';
 import { Card } from '@fluentui/react-card';
-import { weatherIconMap } from './utils';
+import { getNormalizedWeatherIcon, weatherIconMap } from './utils';
 
-const HourlyForecast = forwardRef(({ hourlyData = [], convertTemp, temperatureUnit, windUnit, darkMode }, ref) => {
+const HourlyForecast = forwardRef(({ 
+  hourlyData = [], 
+  temperatureUnit, 
+  windUnit, 
+  darkMode 
+}, ref) => {
   const [selectedHour, setSelectedHour] = useState(null);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
 
+  // Definir función de conversión localmente para evitar dependencias externas
+  const convertTemp = (temp) => {
+    if (temperatureUnit === 'fahrenheit') {
+      return Math.round((temp * 9/5) + 32);
+    }
+    return Math.round(temp);
+  };
+
   const formatTime = (timeString) => {
     if (!timeString) return '';
-    // Parse the time string from the API format "YYYY-MM-DD HH:mm"
-    const [date, time] = timeString.split(' ');
-    const [hours, minutes] = time.split(':');
     
-    return new Date().setHours(hours, minutes, 0, 0);
+    // Create a new Date object directly from the ISO string
+    // The API format "2025-04-13 00:00" needs to be converted to "2025-04-13T00:00"
+    const dateTime = new Date(timeString.replace(' ', 'T'));
+    
+    // Check if the date is valid
+    if (isNaN(dateTime.getTime())) {
+      console.error('Invalid date format:', timeString);
+      return '';
+    }
+    
+    return dateTime;
   };
 
   const renderHourDetails = () => {
@@ -24,13 +44,17 @@ const HourlyForecast = forwardRef(({ hourlyData = [], convertTemp, temperatureUn
         <Stack horizontal horizontalAlign="space-between">
           <Text>Temperatura:</Text>
           <Text>
-            {Math.round(convertTemp(selectedHour.temp))}°{temperatureUnit === 'celsius' ? 'C' : 'F'}
+            {temperatureUnit === 'celsius' ? 
+              `${Math.round(selectedHour.temp)}°C` : 
+              `${Math.round(selectedHour.temp_f || convertTemp(selectedHour.temp))}°F`}
           </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
           <Text>Sensación térmica:</Text>
           <Text>
-            {Math.round(convertTemp(selectedHour.feelslike_c))}°{temperatureUnit === 'celsius' ? 'C' : 'F'}
+            {temperatureUnit === 'celsius' ? 
+              `${Math.round(selectedHour.feelslike_c)}°C` : 
+              `${Math.round(selectedHour.feelslike_f || convertTemp(selectedHour.feelslike_c))}°F`}
           </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
@@ -80,73 +104,84 @@ const HourlyForecast = forwardRef(({ hourlyData = [], convertTemp, temperatureUn
       </Stack>
     );
   };
+
   return (
     <div ref={ref} style={{ 
-      overflowX: 'hidden',
+      overflowX: 'auto',
       width: '100%',
       whiteSpace: 'nowrap',
       scrollBehavior: 'smooth',
       msOverflowStyle: 'none',
       scrollbarWidth: 'none',
       WebkitOverflowScrolling: 'touch',
-      '::-webkit-scrollbar': { display: 'none' }
     }}>
       <Stack horizontal tokens={{ childrenGap: 10 }} style={{
         display: 'inline-flex',
         padding: '10px 0'
       }}>
-        {hourlyData.map((hour, index) => (
-          <Card 
-            key={index} 
-            className="card-animation" 
-            style={{ 
-              width: 120,
-              flex: '0 0 auto',
-              padding: '10px',
-              margin: '0 5px',
-              cursor: 'pointer'
-            }}
-            onClick={() => {
-              setSelectedHour(hour);
-              setIsDetailsPanelOpen(true);
-            }}
-          >
-            <Text variant="medium" style={{ fontWeight: 'bold' }}>
-              {new Date(formatTime(hour.time)).toLocaleTimeString([], { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true 
-              })}</Text>
-            <Icon 
-              iconName={weatherIconMap[hour.weather[0].description] || 'Weather'}
+        {hourlyData.map((hour, index) => {
+          // Comprobación de seguridad para acceder a los datos
+          const temperature = hour.temp;
+          const description = hour.weather && hour.weather[0] ? hour.weather[0].description : '';
+          const humidity = hour.humidity;
+          const time = hour.time;
+
+          return (
+            <Card 
+              key={index} 
+              className="card-animation" 
               style={{ 
-                fontSize: 32,
-                color: darkMode ? '#00b7ff' : '#0078d4',
-                margin: '8px 0'
-              }} 
-            />
-            <Text>
-              {Math.round(convertTemp(hour.temp))}°{temperatureUnit === 'celsius' ? 'C' : 'F'}
-            </Text>
-            <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 5 }}>
+                width: 120,
+                flex: '0 0 auto',
+                padding: '10px',
+                margin: '0 5px',
+                cursor: 'pointer'
+              }}
+              onClick={() => {
+                setSelectedHour(hour);
+                setIsDetailsPanelOpen(true);
+              }}
+            >
+              <Text variant="medium" style={{ fontWeight: 'bold' }}>
+                {time ? formatTime(time).toLocaleTimeString([], { 
+                  hour: '2-digit', 
+                  minute: '2-digit',
+                  hour12: true 
+                }) : 'N/A'}
+              </Text>
               <Icon 
-                iconName="Drop" 
+                iconName={getNormalizedWeatherIcon(description)}
                 style={{ 
-                  fontSize: 16,
-                  color: darkMode ? '#00b7ff' : '#0078d4'
-                }}
+                  fontSize: 32,
+                  color: darkMode ? '#00b7ff' : '#0078d4',
+                  margin: '8px 0'
+                }} 
               />
-              <Text>{Math.round(hour.humidity)}%</Text>
-            </Stack>
-          </Card>
-        ))}
+              <Text>
+                {temperature !== undefined ? 
+                  `${convertTemp(temperature)}°${temperatureUnit === 'celsius' ? 'C' : 'F'}` : 
+                  'N/A'}
+              </Text>
+              <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 5 }}>
+                <Icon 
+                  iconName="Drop" 
+                  style={{ 
+                    fontSize: 16,
+                    color: darkMode ? '#00b7ff' : '#0078d4'
+                  }}
+                />
+                <Text>{humidity !== undefined ? `${Math.round(humidity)}%` : 'N/A'}</Text>
+              </Stack>
+            </Card>
+          );
+        })}
       </Stack>
 
       <Panel
         isOpen={isDetailsPanelOpen}
         onDismiss={() => setIsDetailsPanelOpen(false)}
-        headerText={selectedHour ? 
-          `Pronóstico para las ${new Date(formatTime(selectedHour.time)).toLocaleTimeString([], { 
+        headerText={selectedHour && selectedHour.time ? 
+          `Pronóstico para las ${formatTime(selectedHour.time).toLocaleTimeString([], { 
             hour: '2-digit', 
             minute: '2-digit',
             hour12: true

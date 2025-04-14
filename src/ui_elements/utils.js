@@ -23,12 +23,12 @@ export const airQualityIconMap = {
 
 export const weatherIconMap = {
   'Sunny': 'Sunny',
-  'Partly cloudy': 'PartlyCloudyDay',
+  'Partly Cloudy': 'PartlyCloudyDay',
   'Cloudy': 'CloudWeather',
   'Overcast': 'Cloudy',
   'Mist': 'Fog',
-  'Patchy rain possible': 'WeatherRainShower',
-  'Light rain': 'WeatherDrizzle',
+  'Patchy rain possible' : 'RainShowersDay',
+  'Light rain': 'Precipitation',
   'Moderate rain': 'WeatherRain',
   'Heavy rain': 'WeatherRainShowersDay',
   'Thunder': 'Thunderstorms',
@@ -38,6 +38,7 @@ export const weatherIconMap = {
   'Clear': 'ClearNight',
   'Fog': 'Fog',
   'Windy': 'Squalls',
+  'Blowing snow': 'BlowingSnow',
 };
 
 
@@ -51,4 +52,34 @@ export const getAirQualityLabel = (index) => {
     6: 'Extremadamente peligrosa'
   };
   return labels[index] || 'Desconocida';
+};
+// Agregar esta nueva función de ayuda
+// Función mejorada para obtener el icono normalizado
+export const getNormalizedWeatherIcon = (condition) => {
+  if (!condition) return 'Weather'; // icono por defecto
+  
+  // Normalizar el texto: convertir a minúsculas y eliminar espacios extra
+  const normalizedCondition = condition.trim();
+  
+  // Buscar el icono en el mapa
+  const iconName = weatherIconMap[normalizedCondition];
+  
+  // Si no se encuentra una coincidencia exacta, buscar coincidencias parciales
+  if (!iconName) {
+    if (normalizedCondition.includes('rain')) {
+      if (normalizedCondition.includes('patchy') || normalizedCondition.includes('possible')) {
+        return 'RainShowersDay';
+      }
+      return 'Rain';
+    }
+    if (normalizedCondition.includes('cloud')) {
+      return 'CloudyWeather';
+    }
+    if (normalizedCondition.includes('drizzle')) {
+      return 'Precipitation';
+    }
+    // ... más casos según necesites
+  }
+  
+  return iconName || 'SunQuestionMark'; // retorna el icono encontrado o el icono por defecto
 };

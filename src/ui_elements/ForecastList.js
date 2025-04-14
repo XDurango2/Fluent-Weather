@@ -17,7 +17,9 @@ const getWindDirectionAngle = (direction) => {
   return directions[direction] || 0; // Devuelve 0 si la dirección no coincide
 };
 
-const ForecastList = ({ forecast = [], handleForecastClick }) => {
+const ForecastList = ({ forecast = [], handleForecastClick,  temperatureField, // Añadir estas props
+  temperatureUnit,
+  windUnit }) => {
   return (
     <Stack horizontal tokens={{ childrenGap: 20 }} wrap>
       {forecast.map((day, index) => (
@@ -30,8 +32,14 @@ const ForecastList = ({ forecast = [], handleForecastClick }) => {
           <Text variant="medium" style={{ fontWeight: 'bold' }}>{new Date(day.dt).toLocaleDateString()}</Text>
           <Icon iconName={weatherIconMap[day.weather[0]?.icon] || 'Unknown'} style={{ fontSize: 32, color: '#0078d4' }} />
           <Text>{day.weather[0]?.description.charAt(0).toUpperCase() + day.weather[0]?.description.slice(1)}</Text>
-          <Text>Máx: {Math.round(day.temp.max)}°C</Text>
-          <Text>Mín: {Math.round(day.temp.min)}°C</Text>
+          <Text>
+            Máx: {Math.round(day[temperatureField].max)}°
+            {temperatureUnit === 'celsius' ? 'C' : 'F'}
+          </Text>
+          <Text>
+            Mín: {Math.round(day[temperatureField].min)}°
+            {temperatureUnit === 'celsius' ? 'C' : 'F'}
+          </Text>
           <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 5 }} style={{ marginTop: 10 }}>
             <Icon
               iconName="Up"
