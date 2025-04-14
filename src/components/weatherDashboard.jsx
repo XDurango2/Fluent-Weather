@@ -14,6 +14,7 @@ const WeatherDashboard = ({
   temperatureUnit,
   windUnit,
   showUVPanel
+ 
 }) => {
   const [selectedForecast, setSelectedForecast] = useState(null);
   const hourlyForecastRef = useRef(null);
@@ -54,13 +55,16 @@ const WeatherDashboard = ({
 
   return (
     <>
-      <div style={{ transition: 'all 0.5s ease' }}>
-        <WeatherInfo 
-          weatherData={weatherData} 
-          darkMode={darkMode} 
-          temperatureUnit={temperatureUnit}
-          windUnit={windUnit}
-        />
+       <div style={{ transition: 'all 0.5s ease' }}>
+        <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
+          <WeatherInfo 
+            weatherData={weatherData} 
+            darkMode={darkMode} 
+            temperatureUnit={temperatureUnit}
+            windUnit={windUnit}
+          />
+         
+        </Stack>
       </div>
 
       <Stack style={{ marginTop: 20, transition: 'all 0.5s ease' }}>

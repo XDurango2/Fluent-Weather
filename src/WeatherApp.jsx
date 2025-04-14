@@ -40,7 +40,8 @@ const WeatherApp = () => {
   const [comparisonLoading, setComparisonLoading] = useState(false);
   const [comparisonError, setComparisonError] = useState(null);
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
-  
+  const [isComparisonPanelOpen, setIsComparisonPanelOpen] = useState(false);
+
   // And replace them with simple field selectors if needed
 const temperatureField = temperatureUnit === 'celsius' ? 'temp_c' : 'temp_f';
 const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
@@ -125,10 +126,21 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
   const toggleComparison = (_, checked) => {
     setShowComparison(checked);
     if (!checked) {
+      // Si se desactiva la comparación, cerramos también el panel si estaba abierto
+      setIsComparisonPanelOpen(false);
+      // Limpiamos los datos
       setComparisonData(null);
       setComparisonError(null);
+      setComparisonCity('');  // Reset comparison city
+    } else if (checked && comparisonCity) {
+      // Si se activa y ya hay una ciudad definida, cargamos los datos
+      handleComparisonCityChange(comparisonCity);
+    } else if (checked) {
+      // Si se activa pero no hay ciudad, establecemos una ciudad por defecto
+      setComparisonCity('Barcelona');
     }
   };
+  
   const toggleUVPanel = (_, checked) => setShowUVPanel(checked);
 
   // Display helper functions
@@ -150,18 +162,45 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
                 setCity('Your Location');
               }}
             />
+            <Stack horizontal tokens={{ childrenGap: 8 }}>
+            {showComparison && !isSettingsPanelOpen && (
+              <IconButton
+              iconProps={{ iconName: 'Compare' }}
+              onClick={() => {
+                setIsComparisonPanelOpen(true);
+              }}
+              styles={{
+                root: {
+                  color: darkMode ? '#ffffff' : '#000000',
+                  transition: 'background-color 0.3s ease',
+                  selectors: {
+                    ':hover': {
+                      backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                    }
+                  }
+                }
+              }}
+              title="Comparar ciudades"
+            />
+            )}
             <IconButton
               iconProps={{ iconName: 'GlobalNavButton' }}
               onClick={() => setIsSettingsPanelOpen(true)}
               styles={{
                 root: {
-                  margin: '0 10px',
+                  color: darkMode ? '#ffffff' : '#000000',
                   transition: 'background-color 0.3s ease',
+                  selectors: {
+                    ':hover': {
+                      backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                    }
+                  }
                 }
               }}
+              title="Configuración"
             />
-          </Stack>
-
+            </Stack>
+            </Stack>
           <SettingsPanel 
             isOpen={isSettingsPanelOpen}
             onDismiss={() => setIsSettingsPanelOpen(false)}
@@ -180,20 +219,21 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
           />
           
           <CityComparison 
-                  showComparison={showComparison}
-                  comparisonCity={comparisonCity}
-                  comparisonLoading={comparisonLoading}
-                  comparisonError={comparisonError}
-                  comparisonData={comparisonData}
-                  weatherData={weatherData}
-                  displayTemperature={displayTemperature}
-                  displayWindSpeed={displayWindSpeed}
-                  city={city}
-                  onComparisonCityChange={handleComparisonCityChange}
-                  darkMode={darkMode}
-                  temperatureUnit={temperatureUnit}
-                  windUnit={windUnit}
-                />
+            showComparison={isComparisonPanelOpen}
+            comparisonCity={comparisonCity}
+            comparisonLoading={comparisonLoading}
+            comparisonError={comparisonError}
+            comparisonData={comparisonData}
+            weatherData={weatherData}
+            displayTemperature={displayTemperature}
+            displayWindSpeed={displayWindSpeed}
+            city={city}
+            onComparisonCityChange={handleComparisonCityChange}
+            onDismiss={() => setIsComparisonPanelOpen(false)}
+            darkMode={darkMode}
+            temperatureUnit={temperatureUnit}
+            windUnit={windUnit}
+          />
 
           {loading ? (
             <Spinner size={SpinnerSize.large} label="Cargando datos del clima..." />
@@ -208,6 +248,8 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
               temperatureField={temperatureField}
               windField={windField}
               showUVPanel={showUVPanel}
+              showComparison={showComparison}
+              setShowComparison={setShowComparison}
             />
           )}
         </Stack>

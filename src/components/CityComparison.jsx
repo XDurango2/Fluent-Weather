@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Stack, Text, Spinner, SpinnerSize, TextField, PrimaryButton, Panel, PanelType } from '@fluentui/react';
 import WeatherInfo from '../ui_elements/weather_info';
@@ -11,7 +11,7 @@ const CityComparison = ({
   comparisonData,
   weatherData,
   displayTemperature,
-  displayWindSpeed,
+  onDismiss,
   city,
   onComparisonCityChange,
   darkMode,
@@ -19,22 +19,37 @@ const CityComparison = ({
   windUnit
 }) => {
   const [inputCity, setInputCity] = React.useState('');
-  const [isPanelOpen, setIsPanelOpen] = React.useState(false);
-
-  if (!showComparison) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (inputCity.trim() && typeof onComparisonCityChange === 'function') {
       onComparisonCityChange(inputCity.trim());
       setInputCity('');
-      setIsPanelOpen(true);
     }
   };
 
   return (
-    <Stack style={{ marginTop: 20, marginBottom: 20, transition: 'all 0.5s ease' }}>
-      <Stack horizontal tokens={{ childrenGap: 10 }} style={{ marginBottom: 20 }}>
+    <Panel
+      isOpen={showComparison}
+      onDismiss={onDismiss}
+      type={PanelType.largeFixed}
+      headerText="Comparación del Clima"
+      closeButtonAriaLabel="Cerrar"
+      styles={{
+        main: {
+          backgroundColor: darkMode ? '#202020' : '#ffffff',
+          color: darkMode ? '#ffffff' : '#000000'
+        },
+        headerText: {
+          fontSize: '24px',
+          fontWeight: 'bold'
+        },
+        contentInner: {
+          padding: '20px'
+        }
+      }}
+    >
+      <Stack tokens={{ childrenGap: 20 }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px' }}>
           <TextField
             placeholder="Ingrese ciudad para comparar"
@@ -42,7 +57,7 @@ const CityComparison = ({
             onChange={(_, newValue) => setInputCity(newValue || '')}
             styles={{ 
               root: { 
-                width: 250,
+                width: '100%',
                 '.ms-TextField-fieldGroup': {
                   borderRadius: '4px'
                 }
@@ -61,35 +76,17 @@ const CityComparison = ({
             Comparar
           </PrimaryButton>
         </form>
-      </Stack>
 
-      <Panel
-        isOpen={isPanelOpen && comparisonData !== null}
-        onDismiss={() => setIsPanelOpen(false)}
-        type={PanelType.largeFixed}
-        headerText="Comparación del Clima"
-        closeButtonAriaLabel="Cerrar"
-        styles={{
-          main: {
-            backgroundColor: darkMode ? '#202020' : '#ffffff',
-            color: darkMode ? '#ffffff' : '#000000'
-          },
-          headerText: {
-            fontSize: '24px',
-            fontWeight: 'bold'
-          },
-          contentInner: {
-            padding: 0
-          }
-        }}
-      >
         {comparisonLoading ? (
           <Spinner size={SpinnerSize.medium} label="Cargando datos de comparación..." />
         ) : comparisonError ? (
           <Text style={{ color: 'red' }}>{comparisonError}</Text>
         ) : comparisonData ? (
-          <Stack horizontal tokens={{ childrenGap: 20 }} style={{ height: '100%', overflow: 'auto' }}>
+          <Stack tokens={{ childrenGap: 20 }} style={{ height: '100%', overflow: 'auto' }}>
             <Stack style={{ flex: 1 }}>
+              <Text variant="large" style={{ marginBottom: 10 }}>
+                {city}
+              </Text>
               <WeatherInfo 
                 weatherData={weatherData}
                 darkMode={darkMode}
@@ -98,6 +95,9 @@ const CityComparison = ({
               />
             </Stack>
             <Stack style={{ flex: 1 }}>
+              <Text variant="large" style={{ marginBottom: 10 }}>
+                {comparisonCity}
+              </Text>
               <WeatherInfo 
                 weatherData={comparisonData}
                 darkMode={darkMode}
@@ -109,11 +109,10 @@ const CityComparison = ({
         ) : (
           <Text>Ingrese una ciudad para comparar el clima</Text>
         )}
-      </Panel>
-    </Stack>
+      </Stack>
+    </Panel>
   );
 };
-
 CityComparison.propTypes = {
   showComparison: PropTypes.bool.isRequired,
   comparisonCity: PropTypes.string,
