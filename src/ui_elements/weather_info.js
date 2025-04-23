@@ -124,10 +124,11 @@ const WeatherInfo = ({
     <CityBackground
       cityName={weatherData.location.name}
       darkMode={darkMode}
+      CurrentCondition={weatherData.current.condition.text}
     >
       <Stack 
         style={{
-          padding: 20,
+          padding: 120,
           backgroundColor: 'rgba(0, 0, 0, 0.3)',
           borderRadius: 4,
           color: darkMode ? '#ffffff' : '#000000',
@@ -138,17 +139,18 @@ const WeatherInfo = ({
         <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }}>
           <Icon 
             iconName="Location" 
-            style={{ fontSize: 20, color: darkMode ? '#00b7ff' : '#0078d4' }} 
+            style={{ fontSize: 24, color: darkMode ? '#00b7ff' : '#0078d4' }} 
           />
           <Text variant="xLarge">
             {weatherData.location.name}, {weatherData.location.country}
           </Text>
+          <Text variant="mediumPlus"> (Pronóstico Actual) </Text>
         </Stack>
 
-        <Stack horizontal style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 20 }}>
+        <Stack horizontal style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
           <Stack>
-            <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }}>
-              <Text style={{ fontSize: 48, fontWeight: 'bold' }}>
+            <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 8 }}>
+              <Text style={{ fontSize: 72, fontWeight: 'bold' }}>
                 {temperatureUnit === 'celsius' ? 
                   `${weatherData.current.temp_c}°C` : 
                   `${weatherData.current.temp_f}°F`}
@@ -222,7 +224,7 @@ const WeatherInfo = ({
                   isOpen={isAirQualityPanelOpen}
                   onDismiss={() => setIsAirQualityPanelOpen(false)}
                   headerText="Detalles de Calidad del Aire"
-                  type={PanelType.medium}
+                  type={PanelType.Small}
                   closeButtonAriaLabel="Cerrar"
                   styles={{
                     main: {
@@ -240,7 +242,7 @@ const WeatherInfo = ({
               isOpen={isDetailsPanelOpen}
               onDismiss={() => setIsDetailsPanelOpen(false)}
               headerText="Detalles del Pronóstico"
-              type={PanelType.medium}
+              type={PanelType.Small}
               closeButtonAriaLabel="Cerrar"
               styles={{
                 main: {

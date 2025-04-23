@@ -14,7 +14,7 @@ import SettingsPanel from './components/SettingsPanel';
 import CityComparison from './components/CityComparison';
 import WeatherDashboard from './components/weatherDashboard';
 import { lightTheme, darkTheme } from './themes.js';
-import { getWeatherDataWithFallback } from './services/WeatherService.js';
+import { getWeatherDataWithFallback, fetchExtendedForecast } from './services/WeatherService.js';
 import { 
   selectTemperature,
   selectWindSpeed,
@@ -41,6 +41,9 @@ const WeatherApp = () => {
   const [comparisonError, setComparisonError] = useState(null);
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
   const [isComparisonPanelOpen, setIsComparisonPanelOpen] = useState(false);
+  const [extendedForecast, setExtendedForecast] = useState(null);
+  const [extendedForecastLoading, setExtendedForecastLoading] = useState(false);
+  const [extendedForecastError, setExtendedForecastError] = useState(null);
 
   // And replace them with simple field selectors if needed
 const temperatureField = temperatureUnit === 'celsius' ? 'temp_c' : 'temp_f';
@@ -86,6 +89,27 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
     };
     fetchComparisonData();
   }, [showComparison, comparisonCity]);
+
+  // Add useEffect for fetching extended forecast
+  useEffect(() => {
+    const fetchExtendedForecastData = async () => {
+      setExtendedForecastLoading(true);
+      try {
+        const data = await fetchExtendedForecast(city);
+        setExtendedForecast(data);
+        setExtendedForecastError(null);
+      } catch (err) {
+        setExtendedForecastError('Error al cargar el pronóstico extendido: ' + err.message);
+        console.error('Error fetching extended forecast:', err);
+      } finally {
+        setExtendedForecastLoading(false);
+      }
+    };
+
+    fetchExtendedForecastData();
+  }, [city]);
+
+
 
   // Event handlers
   const handleSearch = () => {
@@ -241,16 +265,19 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
             <Text variant="large" style={{ color: 'red' }}>{error}</Text>
           ) : weatherData && (
             <WeatherDashboard 
-              weatherData={weatherData}
-              darkMode={darkMode}
-              temperatureUnit={temperatureUnit}
-              windUnit={windUnit}
-              temperatureField={temperatureField}
-              windField={windField}
-              showUVPanel={showUVPanel}
-              showComparison={showComparison}
-              setShowComparison={setShowComparison}
-            />
+            weatherData={weatherData}
+            extendedForecast={extendedForecast}
+            extendedForecastLoading={extendedForecastLoading}
+            extendedForecastError={extendedForecastError}
+            darkMode={darkMode}
+            temperatureUnit={temperatureUnit}
+            windUnit={windUnit}
+            temperatureField={temperatureField}
+            windField={windField}
+            showUVPanel={showUVPanel}
+            showComparison={showComparison}
+            setShowComparison={setShowComparison}
+          />
           )}
         </Stack>
       </div>

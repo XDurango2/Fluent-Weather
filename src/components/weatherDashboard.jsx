@@ -1,15 +1,18 @@
 // src/components/WeatherDashboard.jsx
 import React, { useRef, useState } from 'react';
-import { Stack, Text, IconButton } from '@fluentui/react';
+import { Stack, Text, IconButton, Spinner, SpinnerSize } from '@fluentui/react';
 import WeatherInfo from '../ui_elements/weather_info.js';
 import HourlyForecast from '../ui_elements/HourlyForecast';
-import ForecastList from '../ui_elements/ForecastList';
+import ForecastList from '../ui_elements/ForecastList_5Days';
 import ForecastDetailPanel from '../ui_elements/ForecastDetailPanel';
 import UVScale from '../ui_elements/UV_scale.js';
 import UVHourly from '../ui_elements/UV_hourly.js';
 
 const WeatherDashboard = ({
   weatherData,
+  extendedForecast,
+  extendedForecastLoading,
+  extendedForecastError,
   darkMode,
   temperatureUnit,
   windUnit,
@@ -105,12 +108,19 @@ const WeatherDashboard = ({
 
       <Stack style={{ marginTop: 20, transition: 'all 0.5s ease' }}>
         <Text variant="large">Pronóstico a 5 días</Text>
-        <ForecastList 
-            forecast={weatherData?.daily?.slice(0, 5) || []} 
-            handleForecastClick={setSelectedForecast} 
-            temperatureField={temperatureUnit === 'celsius' ? 'temp' : 'temp_f'}
+        {extendedForecastLoading ? (
+          <Spinner size={SpinnerSize.large} label="Cargando pronóstico..." />
+        ) : extendedForecastError ? (
+          <Text style={{ color: 'red' }}>{extendedForecastError}</Text>
+        ) : extendedForecast?.forecast ? (
+          <ForecastList
+            forecast={extendedForecast.forecast}
             temperatureUnit={temperatureUnit}
-        />
+            windUnit={windUnit}
+            darkMode={darkMode}
+            onForecastSelect={setSelectedForecast}
+          />
+        ) : null}
       </Stack>
 
       <ForecastDetailPanel 

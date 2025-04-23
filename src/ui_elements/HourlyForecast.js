@@ -188,7 +188,7 @@ const HourlyForecast = forwardRef(({
           })}` : 
           'Detalles del pronóstico'
         }
-        type={PanelType.medium}
+        type={PanelType.Small}
         closeButtonAriaLabel="Cerrar"
         styles={{
           main: {

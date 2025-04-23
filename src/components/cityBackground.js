@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const CityBackground = ({ cityName, darkMode, children }) => {
+const CityBackground = ({ cityName, darkMode, children,CurrentCondition }) => {
   const [backgroundUrl, setBackgroundUrl] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchBackgroundImage = async () => {
-      if (!cityName) return;
+      if (!cityName|| !CurrentCondition) return;
       
       //console.log('Fetching image for:', cityName); // Debug log
       setIsLoading(true);
       
       try {
         const response = await axios.get(`http://localhost:5000/api/background`, {
-          params: { city: cityName }
+          params: { city: cityName,Forecast: CurrentCondition },
         });
 
         //console.log('API Response:', response.data); // Debug log
@@ -48,13 +48,13 @@ const CityBackground = ({ cityName, darkMode, children }) => {
       setBackgroundUrl('');
       setIsLoading(true);
     };
-  }, [cityName]);
+  }, [cityName, CurrentCondition]);
   
   return (
     <div
       style={{
         position: 'relative',
-        minHeight: '290px',
+        minHeight: '200px',
         width: '100%',
         overflow: 'hidden',
         borderRadius: 8,

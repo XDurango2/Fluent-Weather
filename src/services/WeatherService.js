@@ -19,6 +19,28 @@ const fetchWeatherData = async (city) => {
     throw error;
   }
 };
+// La función fetchExtendedForecast está definida pero no se usa en este componente
+// Si la necesitas para futuras implementaciones, asegúrate de importar o definir generateForecastData
+const fetchExtendedForecast = async (city) => {
+  try {
+    const response = await axios.get(`http://localhost:5000/api/weather/week`, {
+      params: { city }
+    });
+    
+    if (response.data && response.status === 200) {
+      // Nota: generateForecastData debería estar importado o definido
+      // Por ahora devolvemos los datos directamente
+      // return generateForecastData(response.data);
+      console.log("Extended forecast data:", generateExtendedForecastData(response.data));
+      return generateExtendedForecastData(response.data);
+    } else {
+      throw new Error('Invalid response from weather API');
+    }
+  } catch (error) {
+    console.error('Error fetching weather data:', error);
+    throw error;
+  }
+};
 
 // Data transformation logic
 const generateForecastData = (baseData) => {
@@ -84,7 +106,44 @@ const generateForecastData = (baseData) => {
     }))
   };
 };
+const generateExtendedForecastData = (baseData) => {
+  if (!baseData || !baseData.forecast || !baseData.forecast.forecastday) {
+    throw new Error('Invalid extended forecast data structure');
+  }
 
+  return {
+    location: baseData.location,
+    current: baseData.current,
+    forecast: baseData.forecast.forecastday.map(day => ({
+      date: day.date,
+      day: {
+        maxtemp_c: day.day.maxtemp_c,
+        maxtemp_f: day.day.maxtemp_f,
+        mintemp_c: day.day.mintemp_c,
+        mintemp_f: day.day.mintemp_f,
+        avgtemp_c: day.day.avgtemp_c,
+        avgtemp_f: day.day.avgtemp_f,
+        maxwind_kph: day.day.maxwind_kph,
+        maxwind_mph: day.day.maxwind_mph,
+        avghumidity: day.day.avghumidity,
+        condition: day.day.condition,
+        uv: day.day.uv
+      },
+      hour: day.hour.map(hour => ({
+        time: hour.time,
+        temp_c: hour.temp_c,
+        temp_f: hour.temp_f,
+        condition: hour.condition,
+        wind_kph: hour.wind_kph,
+        wind_mph: hour.wind_mph,
+        wind_degree: hour.wind_degree,
+        wind_dir: hour.wind_dir,
+        humidity: hour.humidity,
+        uv: hour.uv
+      }))
+    }))
+  };
+};
 // Fallback to mock data if API fails
 const getWeatherDataWithFallback = async (city) => {
   try {
@@ -95,4 +154,4 @@ const getWeatherDataWithFallback = async (city) => {
   }
 };
 
-export { fetchWeatherData, generateForecastData, getWeatherDataWithFallback };
+export { fetchWeatherData, generateForecastData, getWeatherDataWithFallback, fetchExtendedForecast, generateExtendedForecastData };
