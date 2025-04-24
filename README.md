@@ -1,8 +1,8 @@
 # FluentWeather
 
 this is a website Demo that uses Fluent components to make a weather forecast website
-![Screenshot of the website](/fluent_weather/readme_files/clearMode.jpeg)
-![Screenshot with dark mode enabled](/fluent_weather/readme_files/darkMode.jpeg)
+![Screenshot of the website](readme_files/clearMode.jpeg)
+![Screenshot with dark mode enabled](readme_files/darkMode.jpeg)
 ## Main Features
  - UI based on Microsoft's fluent Design System
  - detailed weather forecast on the next 5 days
