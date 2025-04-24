@@ -1,49 +1,54 @@
-# Getting Started with Create React App and Fluent UI
+# FluentWeather
 
-This is a [Create React App](https://github.com/facebook/create-react-app) based repo that comes with Fluent UI pre-installed!
+this is a website Demo that uses Fluent components to make a weather forecast website
+![Screenshot of the website](/fluent_weather/readme_files/clearMode.jpeg)
+![Screenshot with dark mode enabled](/fluent_weather/readme_files/darkMode.jpeg)
+## Main Features
+ - UI based on Microsoft's fluent Design System
+ - detailed weather forecast on the next 5 days
+ - hourly forecast visualization
+ - detalled view of any day or hour selected
+ - unit conversion is supported (temperature and wind speed)
+ - dynamic icons based on the forecast
+ - dynamic background based on the forecast and city
+ - forecast comparsion between cities
+ - Dark Mode Works! 
+
+
+
+
+## installation
+
+```bash
+git clone https://github.com/XDurango2/fluentweather.git
+cd fluentweather
+cd fluent_weather
+npm install
+npm start
+```
+
 
 ## Available Scripts
+npm start – Run in development mode
 
-In the project directory, you can run:
+npm test – Launch the test runner
 
-### `npm start`
+npm run build – Create production-ready build
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+PLEASE, NOTE: the backend of the project is in back/background.py
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## Roadmap
 
-### `npm test`
+- Support for multiple languages
+- Geolocation-based city selection
+- Weather alerts integration
+- Real-time weather maps
+## Powered By
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Photos provided with  
+<img src="https://pexels.com/assets/static/images/meta/pexels-logo.svg" alt="Pexels" width="100"/>
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Weather data provided by <img src= "https://cdn.weatherapi.com/v4/images/weatherapi_logo.png" alt=weatherapi.com width ="100">
 
 # Contributing
 
