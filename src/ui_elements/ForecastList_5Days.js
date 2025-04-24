@@ -1,25 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Stack, Separator, IconButton, Text, Icon, Panel, PanelType, AnimationStyles, mergeStyles, DefaultButton } from '@fluentui/react';
-import { weatherIconMap } from './utils';
+import { weatherIconMap, getNormalizedWeatherIcon, getWindDirectionAngle } from './utils';
 import { Card } from '@fluentui/react-card';
-
-const getWindDirectionAngle = (direction) => {
-  if (typeof direction === 'number') {
-    return direction;
-  }
-  
-  const directions = {
-    'Norte': 0,
-    'Noreste': 45,
-    'Este': 90,
-    'Sureste': 135,
-    'Sur': 180,
-    'Suroeste': 225,
-    'Oeste': 270,
-    'Noroeste': 315,
-  };
-  return directions[direction] || 0;
-};
 
 const ForecastList = ({ 
   forecast = [], 
@@ -33,10 +15,11 @@ const ForecastList = ({
   const fadeIn = mergeStyles(AnimationStyles.fadeIn400);
   const slideUpIn = mergeStyles(AnimationStyles.slideUpIn20);
   const hourlyContainerRef = useRef(null);
+  const forecastContainerRef = useRef(null);
 
   const scrollHourly = (direction) => {
     if (hourlyContainerRef.current) {
-      const scrollAmount = 300; // Ajusta este valor según necesites
+      const scrollAmount = 300;
       const currentScroll = hourlyContainerRef.current.scrollLeft;
       hourlyContainerRef.current.scrollTo({
         left: currentScroll + (direction === 'right' ? scrollAmount : -scrollAmount),
@@ -45,35 +28,57 @@ const ForecastList = ({
     }
   };
 
-  const cardStyles = mergeStyles({
+  const scrollForecast = (direction) => {
+    if (forecastContainerRef.current) {
+      const scrollAmount = 300;
+      const currentScroll = forecastContainerRef.current.scrollLeft;
+      forecastContainerRef.current.scrollTo({
+        left: currentScroll + (direction === 'right' ? scrollAmount : -scrollAmount),
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Definimos los estilos como objetos
+  const cardStyles = {
     width: 150,
     margin: 10,
     cursor: 'pointer',
     transition: 'all 0.3s ease',
     padding: '15px',
-    selectors: {
-      ':hover': {
-        transform: 'translateY(-5px)',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
-      }
+    ':hover': {
+      transform: 'translateY(-5px)',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
     }
-  });
+  };
 
-  // Estilos para las tarjetas de hora con animación
-  const hourCardStyles = mergeStyles({
+  const hourCardStyles = {
     width: 120,
     flex: '0 0 auto',
     padding: '10px',
     margin: '0 5px',
     cursor: 'pointer',
     transition: 'all 0.3s ease',
-    selectors: {
-      ':hover': {
-        transform: 'scale(1.05)',
-        backgroundColor: 'rgba(0, 120, 212, 0.1)'
-      }
+    ':hover': {
+      transform: 'scale(1.05)',
+      backgroundColor: 'rgba(0, 120, 212, 0.1)'
     }
-  });
+  };
+
+  // Botones de navegación para estilo de UI de Fluent
+  const navButtonStyles = {
+    root: {
+      height: '100%',
+      margin: '0 10px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minWidth: '32px'
+    },
+    icon: {
+      fontSize: 16
+    }
+  };
 
   const formatTemperature = (temp) => {
     return temperatureUnit === 'celsius' ? temp : (temp * 9/5) + 32;
@@ -120,7 +125,6 @@ const ForecastList = ({
               `${selectedHourContent.wind_mph} mph`}
           </Text>
         </Stack>
-        {/* Botón para regresar al pronóstico diario */}
         <DefaultButton 
           text="Volver al pronóstico diario" 
           onClick={() => setSelectedHourContent(null)}
@@ -173,12 +177,7 @@ const ForecastList = ({
           <IconButton
             iconProps={{ iconName: 'ChevronLeft' }}
             onClick={() => scrollHourly('left')}
-            styles={{
-              root: {
-                height: '100%',
-                margin: '0 10px'
-              }
-            }}
+            styles={navButtonStyles}
           />
           <div 
             ref={hourlyContainerRef}
@@ -197,13 +196,11 @@ const ForecastList = ({
               {selectedDay.hour.map((hour, index) => (
                 <Card 
                   key={index} 
-                  className={`${hourCardStyles} ${fadeIn}`}
+                  className={fadeIn}
+                  styles={{
+                    root: hourCardStyles
+                  }}
                   style={{ 
-                    width: 120,
-                    flex: '0 0 auto',
-                    padding: '10px',
-                    margin: '0 5px',
-                    cursor: 'pointer',
                     animationDelay: `${index * 50}ms`
                   }}
                   onClick={() => setSelectedHourContent(hour)}
@@ -216,7 +213,7 @@ const ForecastList = ({
                     }) : 'N/A'}
                   </Text>
                   <Icon 
-                    iconName={weatherIconMap[hour.condition.text] || 'Weather'}
+                    iconName={getNormalizedWeatherIcon(hour.condition.text)} 
                     style={{ 
                       fontSize: 32,
                       color: '#0078d4',
@@ -245,12 +242,7 @@ const ForecastList = ({
           <IconButton
             iconProps={{ iconName: 'ChevronRight' }}
             onClick={() => scrollHourly('right')}
-            styles={{
-              root: {
-                height: '100%',
-                margin: '0 10px'
-              }
-            }}
+            styles={navButtonStyles}
           />
         </Stack>
       </Stack>
@@ -259,50 +251,89 @@ const ForecastList = ({
 
   return (
     <>
-      <Stack horizontal tokens={{ childrenGap: 20 }} wrap className={fadeIn}>
-        {forecast.map((day, index) => (
-          <Card
-            key={index}
-            className={`${cardStyles} ${slideUpIn}`}
-            style={{ animationDelay: `${index * 100}ms` }}
-            onClick={() => {
-              setSelectedDay(day);
-              setSelectedHourContent(null);
-              setIsPanelOpen(true);
-            }}
-          >
-            <Text variant="medium" style={{ fontWeight: 'bold' }}>
-              {new Date(day.date).toLocaleDateString('es-ES', { weekday: 'long' })}
-            </Text>
-            <Icon 
-              iconName={weatherIconMap[day.day.condition.code] || 'Weather'} 
-              style={{ fontSize: 32, color: '#0078d4', margin: '8px 0' }} 
-            />
-            <Text>{day.day.condition.text}</Text>
-            <Stack horizontal verticalAlign="space-between" style={{ marginTop: '8px' }}>
-            <Text>Máx: {formatTemperature(day.day.maxtemp_c)}°{getTempUnitSymbol()}</Text>
-            <Text>Mín: {formatTemperature(day.day.mintemp_c)}°{getTempUnitSymbol()}</Text>
-            </Stack>
-            <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 5 }} style={{ marginTop: '8px' }}>
-              <Icon 
-                iconName="Up" 
+      <Stack horizontal verticalAlign="center" style={{ width: '100%' }}>
+        <IconButton
+          iconProps={{ iconName: 'ChevronLeft' }}
+          onClick={() => scrollForecast('left')}
+          styles={navButtonStyles}
+        />
+        <div 
+          ref={forecastContainerRef}
+          style={{ 
+            overflowX: 'hidden',
+            width: '100%',
+            whiteSpace: 'nowrap',
+            scrollBehavior: 'smooth',
+            position: 'relative'
+          }}
+        >
+          <Stack horizontal tokens={{ childrenGap: 10 }} className={fadeIn} style={{
+            display: 'inline-flex',
+            padding: '10px 0'
+          }}>
+            {forecast.map((day, index) => (
+              <Card
+                key={index}
+                className={slideUpIn}
+                styles={{
+                  root: cardStyles
+                }}
                 style={{ 
-                  fontSize: 16, 
-                  color: '#0078d4',
-                  transform: `rotate(${getWindDirectionAngle(day.day.wind_degree)}deg)`
-                }} 
-              />
-              <Text>{formatWindSpeed(day.day.maxwind_kph)} {getWindUnitSymbol()}</Text>
-            </Stack>
-            <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 5 }}>
-            <Icon 
-              iconName="Precipitation" 
-              style={{ fontSize: 16, color: '#0078d4' }} 
-            />
-            <Text>{day.day.avghumidity}%</Text>
+                  animationDelay: `${index * 100}ms`,
+                  flex: '0 0 auto'
+                }}
+                onClick={() => {
+                  setSelectedDay(day);
+                  setSelectedHourContent(null);
+                  setIsPanelOpen(true);
+                }}
+              >
+                <Text variant="medium" style={{ fontWeight: 'bold' }}>
+                  {new Date(day.date).toLocaleDateString('es-ES', { weekday: 'long' })}
+                </Text>
+                <Icon 
+                  iconName={getNormalizedWeatherIcon(day.day.condition.text)} 
+                  style={{ 
+                    fontSize: 32, 
+                    color: '#0078d4', 
+                    margin: '8px 0' 
+                  }} 
+                />
+                <Text>{day.day.condition.text}</Text>
+                <Stack horizontal verticalAlign="space-between" style={{ marginTop: '8px' }}>
+                  <Text>Máx: {formatTemperature(day.day.maxtemp_c)}°{getTempUnitSymbol()}</Text>
+                  <Text>Mín: {formatTemperature(day.day.mintemp_c)}°{getTempUnitSymbol()}</Text>
+                </Stack>
+                <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 5 }} style={{ marginTop: '8px' }}>
+                  <Icon 
+                    iconName="Up" 
+                    style={{ 
+                      fontSize: 16, 
+                      color: '#0078d4',
+                      transform: `rotate(${getWindDirectionAngle(day.day.wind_dir)}deg)`
+                    }} 
+                  />
+                  <Text>{formatWindSpeed(day.day.maxwind_kph)} {getWindUnitSymbol()}</Text>
+                </Stack>
+                <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 5 }}>
+                  <Icon 
+                    iconName="Precipitation" 
+                    style={{ 
+                      fontSize: 16, 
+                      color: '#0078d4' 
+                    }} 
+                  />
+                  <Text>{day.day.avghumidity}%</Text>
+                </Stack>
+              </Card>
+            ))}
           </Stack>
-          </Card>
-        ))}
+        </div>
+        <IconButton
+          iconProps={{ iconName: 'ChevronRight' }}
+          onClick={() => scrollForecast('right')}
+          styles={navButtonStyles}
+        />
       </Stack>
 
       <Panel
