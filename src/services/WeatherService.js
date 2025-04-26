@@ -5,7 +5,7 @@ import mockWeatherDataLondon from '../components/mockData.json';
 // API interaction logic
 const fetchWeatherData = async (city) => {
   try {
-    const response = await axios.get(`http://localhost:5000/api/weather`, {
+    const response = await axios.get(`/api/weather`, {
       params: { city }
     });
     
@@ -23,7 +23,7 @@ const fetchWeatherData = async (city) => {
 // Si la necesitas para futuras implementaciones, asegúrate de importar o definir generateForecastData
 const fetchExtendedForecast = async (city) => {
   try {
-    const response = await axios.get(`http://localhost:5000/api/weather/week`, {
+    const response = await axios.get(`/api/weather/week`, {
       params: { city }
     });
     

@@ -13,8 +13,7 @@ const CityBackground = ({ cityName, darkMode, children,CurrentCondition }) => {
       setIsLoading(true);
       
       try {
-        const response = await axios.get(`http://localhost:5000/api/background`, {
-          params: { city: cityName,Forecast: CurrentCondition },
+        const response = await axios.get(`/api/background`, {          params: { city: cityName,Forecast: CurrentCondition },
         });
 
         //console.log('API Response:', response.data); // Debug log

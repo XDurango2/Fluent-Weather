@@ -1,0 +1,5 @@
+Flask
+flask-cors
+requests
+python-dotenv
+git+https://github.com/weatherapicom/python.git#egg=weatherapipython
