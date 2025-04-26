@@ -5,8 +5,7 @@
       { "src": "back/background.py", "use": "@vercel/python" }
     ],
     "routes": [
-      { "src": "/api/(.*)", "dest": "back/background.py" },
-      { "src": "/(.*)", "dest": "/build/index.html" }
+      { "src": "/api/(.*)", "dest": "back/background.py" }
     ]
   }
   
