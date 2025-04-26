@@ -5,11 +5,12 @@
       { "src": "back/background.py", "use": "@vercel/python" }
     ],
     "routes": [
+      { "handle": "filesystem" }, 
       { "src": "/api/(.*)", "dest": "back/background.py" },
-      { "handle": "filesystem" },
       { "src": "/static/(.*)", "dest": "/static/$1" },
       { "src": "/favicon.ico", "dest": "/favicon.ico" },
       { "src": "/manifest.json", "dest": "/manifest.json" },
       { "src": "/(.*)", "dest": "/index.html" }
     ]
   }
+  
