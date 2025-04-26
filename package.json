@@ -2,7 +2,6 @@
   "name": "fluent_weather",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
   "dependencies": {
     "@fluentui/react": "^8.122.14",
     "@fluentui/react-card": "^9.2.3",
