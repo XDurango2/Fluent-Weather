@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Fluent Weather",
+  "name": "Fluent Weather",
+  "description": "A simple weather app using OpenWeatherMap API",
   "icons": [
     {
       "src": "favicon.ico",
