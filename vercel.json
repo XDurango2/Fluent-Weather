@@ -1,12 +1,12 @@
 {
     "version": 2,
     "builds": [
-      { "src": "back/background.py", "use": "@vercel/python" },
-      { "src": "package.json", "use": "@vercel/static-build" }
+      { "src": "package.json", "use": "@vercel/static-build" },
+      { "src": "back/background.py", "use": "@vercel/python" }
     ],
     "routes": [
       { "src": "/api/(.*)", "dest": "back/background.py" },
-      { "src": "/(.*)", "dest": "/index.html" }
+      { "src": "/(.*)", "dest": "/build/index.html" }
     ]
   }
   
