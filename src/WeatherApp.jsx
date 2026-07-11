@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  IconButton, 
-  Spinner, 
-  SpinnerSize, 
-  Stack, 
-  Text, 
-  ThemeProvider, 
+import {
+  DefaultButton,
+  IconButton,
+  Spinner,
+  SpinnerSize,
+  Stack,
+  Text,
+  ThemeProvider,
   initializeIcons
 } from '@fluentui/react';
 import SearchForm from './ui_elements/search_form';
@@ -45,6 +46,7 @@ const WeatherApp = () => {
   const [extendedForecastLoading, setExtendedForecastLoading] = useState(false);
   const [extendedForecastError, setExtendedForecastError] = useState(null);
   const [locating, setLocating] = useState(false);
+  const [retryToken, setRetryToken] = useState(0);
 
   // And replace them with simple field selectors if needed
 const temperatureField = temperatureUnit === 'celsius' ? 'temp_c' : 'temp_f';
@@ -68,7 +70,9 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
       }
     };
     fetchWeatherData();
-  }, [city]);
+  }, [city, retryToken]);
+
+  const handleRetry = () => setRetryToken((token) => token + 1);
 
   // Fetch comparison data if needed
   useEffect(() => {
@@ -108,7 +112,7 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
     };
 
     fetchExtendedForecastData();
-  }, [city]);
+  }, [city, retryToken]);
 
 
 
@@ -230,6 +234,7 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
                 }
               }}
               title="Comparar ciudades"
+              ariaLabel="Comparar ciudades"
             />
             )}
             <IconButton
@@ -247,6 +252,7 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
                 }
               }}
               title="Configuración"
+              ariaLabel="Configuración"
             />
             </Stack>
             </Stack>
@@ -287,13 +293,17 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
           {loading ? (
             <Spinner size={SpinnerSize.large} label="Cargando datos del clima..." />
           ) : error ? (
-            <Text variant="large" style={{ color: 'red' }}>{error}</Text>
+            <Stack tokens={{ childrenGap: 10 }} horizontalAlign="start">
+              <Text variant="large" style={{ color: 'red' }}>{error}</Text>
+              <DefaultButton text="Reintentar" onClick={handleRetry} />
+            </Stack>
           ) : weatherData && (
             <WeatherDashboard 
             weatherData={weatherData}
             extendedForecast={extendedForecast}
             extendedForecastLoading={extendedForecastLoading}
             extendedForecastError={extendedForecastError}
+            onRetryExtendedForecast={handleRetry}
             darkMode={darkMode}
             temperatureUnit={temperatureUnit}
             windUnit={windUnit}

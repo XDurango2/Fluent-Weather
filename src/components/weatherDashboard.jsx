@@ -1,6 +1,6 @@
 // src/components/WeatherDashboard.jsx
 import React, { useRef, useState } from 'react';
-import { Stack, Text, IconButton, Spinner, SpinnerSize } from '@fluentui/react';
+import { DefaultButton, Stack, Text, IconButton, Spinner, SpinnerSize } from '@fluentui/react';
 import WeatherInfo from '../ui_elements/weather_info';
 import HourlyForecast from '../ui_elements/HourlyForecast';
 import ForecastList from '../ui_elements/ForecastList_5Days';
@@ -13,11 +13,12 @@ const WeatherDashboard = ({
   extendedForecast,
   extendedForecastLoading,
   extendedForecastError,
+  onRetryExtendedForecast,
   darkMode,
   temperatureUnit,
   windUnit,
   showUVPanel
- 
+
 }) => {
   const [selectedForecast, setSelectedForecast] = useState(null);
   const hourlyForecastRef = useRef(null);
@@ -73,9 +74,11 @@ const WeatherDashboard = ({
       <Stack style={{ marginTop: 20, transition: 'all 0.5s ease' }}>
         <Text variant="large">Pronóstico por Hora</Text>
         <Stack horizontal>
-          <IconButton 
-            iconProps={{ iconName: 'ChevronLeft' }} 
+          <IconButton
+            iconProps={{ iconName: 'ChevronLeft' }}
             onClick={scrollLeft}
+            title="Desplazar hacia la izquierda"
+            ariaLabel="Desplazar hacia la izquierda"
             styles={{
               root: {
                 height: 'fit-content',
@@ -92,9 +95,11 @@ const WeatherDashboard = ({
             darkMode={darkMode}
             // Ya no pasamos convertTemp ni temperatureField
           />
-          <IconButton 
-            iconProps={{ iconName: 'ChevronRight' }} 
+          <IconButton
+            iconProps={{ iconName: 'ChevronRight' }}
             onClick={scrollRight}
+            title="Desplazar hacia la derecha"
+            ariaLabel="Desplazar hacia la derecha"
             styles={{
               root: {
                 height: 'fit-content',
@@ -111,7 +116,10 @@ const WeatherDashboard = ({
         {extendedForecastLoading ? (
           <Spinner size={SpinnerSize.large} label="Cargando pronóstico..." />
         ) : extendedForecastError ? (
-          <Text style={{ color: 'red' }}>{extendedForecastError}</Text>
+          <Stack tokens={{ childrenGap: 10 }} horizontalAlign="start">
+            <Text style={{ color: 'red' }}>{extendedForecastError}</Text>
+            <DefaultButton text="Reintentar" onClick={onRetryExtendedForecast} />
+          </Stack>
         ) : extendedForecast?.forecast ? (
           <ForecastList
             forecast={extendedForecast.forecast}
