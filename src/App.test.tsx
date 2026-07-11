@@ -1,9 +1,10 @@
 import React from 'react';
+import { it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-it('renders "Welcome to Your Fluent UI App"', () => {
+it('renders the initial loading state', () => {
   render(<App />);
-  const linkElement = screen.getByText(/Welcome to Your Fluent UI App/i);
-  expect(linkElement).toBeInTheDocument();
+  const loadingText = screen.getByText(/Cargando datos del clima/i);
+  expect(loadingText).toBeInTheDocument();
 });
