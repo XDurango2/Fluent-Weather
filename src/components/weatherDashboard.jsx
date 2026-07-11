@@ -1,12 +1,12 @@
 // src/components/WeatherDashboard.jsx
 import React, { useRef, useState } from 'react';
 import { Stack, Text, IconButton, Spinner, SpinnerSize } from '@fluentui/react';
-import WeatherInfo from '../ui_elements/weather_info.js';
+import WeatherInfo from '../ui_elements/weather_info';
 import HourlyForecast from '../ui_elements/HourlyForecast';
 import ForecastList from '../ui_elements/ForecastList_5Days';
 import ForecastDetailPanel from '../ui_elements/ForecastDetailPanel';
-import UVScale from '../ui_elements/UV_scale.js';
-import UVHourly from '../ui_elements/UV_hourly.js';
+import UVScale from '../ui_elements/UV_scale';
+import UVHourly from '../ui_elements/UV_hourly';
 
 const WeatherDashboard = ({
   weatherData,

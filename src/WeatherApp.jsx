@@ -8,7 +8,7 @@ import {
   ThemeProvider, 
   initializeIcons
 } from '@fluentui/react';
-import SearchForm from './ui_elements/search_form.js';
+import SearchForm from './ui_elements/search_form';
 import Header from './components/Header.jsx';
 import SettingsPanel from './components/SettingsPanel';
 import CityComparison from './components/CityComparison';

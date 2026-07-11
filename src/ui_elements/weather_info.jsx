@@ -6,7 +6,7 @@ import {
   getWindDirectionAngle, 
   getAirQualityLabel 
 } from './utils';
-import CityBackground from '../components/cityBackground.js';
+import CityBackground from '../components/cityBackground';
 
 const WeatherInfo = ({
   weatherData,
