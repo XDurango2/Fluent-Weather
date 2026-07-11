@@ -2,4 +2,4 @@ Flask
 flask-cors
 requests
 python-dotenv
-weatherapipython @ git+https://github.com/weatherapicom/python.git
+weatherapipython @ git+https://github.com/weatherapicom/python.git@05344f2d04cbf0b9513cb69b71f56a66a348e1be
