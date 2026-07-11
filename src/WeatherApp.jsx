@@ -139,10 +139,15 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
         setLocating(false);
       },
       (geoError) => {
-        setError('No se pudo obtener tu ubicación: ' + geoError.message);
+        const messages = {
+          1: 'Permiso de ubicación denegado. Habilítalo en la configuración del navegador.',
+          2: 'No se pudo determinar tu ubicación.',
+          3: 'La búsqueda de tu ubicación tardó demasiado. Intenta de nuevo.',
+        };
+        setError(messages[geoError.code] || 'No se pudo obtener tu ubicación');
         setLocating(false);
       },
-      { timeout: 10000 }
+      { timeout: 20000, maximumAge: 60000, enableHighAccuracy: false }
     );
   };
 
