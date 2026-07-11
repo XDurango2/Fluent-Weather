@@ -19,19 +19,13 @@ const fetchWeatherData = async (city) => {
     throw error;
   }
 };
-// La función fetchExtendedForecast está definida pero no se usa en este componente
-// Si la necesitas para futuras implementaciones, asegúrate de importar o definir generateForecastData
 const fetchExtendedForecast = async (city) => {
   try {
     const response = await axios.get(`/api/weather/week`, {
       params: { city }
     });
-    
+
     if (response.data && response.status === 200) {
-      // Nota: generateForecastData debería estar importado o definido
-      // Por ahora devolvemos los datos directamente
-      // return generateForecastData(response.data);
-      console.log("Extended forecast data:", generateExtendedForecastData(response.data));
       return generateExtendedForecastData(response.data);
     } else {
       throw new Error('Invalid response from weather API');

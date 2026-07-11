@@ -8,13 +8,11 @@ import {
 } from './utils';
 import CityBackground from '../components/cityBackground.js';
 
-// Define our own conversion function inside the component
-const WeatherInfo = ({ 
-  weatherData, 
-  darkMode, 
-  temperatureUnit, 
+const WeatherInfo = ({
+  weatherData,
+  darkMode,
+  temperatureUnit,
   windUnit,
-  // Removed convertTemp and convertWind props as they seem to be causing issues
 }) => {
   const [isAirQualityPanelOpen, setIsAirQualityPanelOpen] = useState(false);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);

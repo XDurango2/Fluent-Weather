@@ -10,7 +10,10 @@ import os
 
 # Crear la app de Flask
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=[
+    "https://fluent-weather-blue.vercel.app",
+    "http://localhost:3000",
+])
 
 # Configurar API keys
 configuration = weatherapi.Configuration()

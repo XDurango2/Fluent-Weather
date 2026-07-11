@@ -8,26 +8,23 @@ const CityBackground = ({ cityName, darkMode, children,CurrentCondition }) => {
   useEffect(() => {
     const fetchBackgroundImage = async () => {
       if (!cityName|| !CurrentCondition) return;
-      
-      //console.log('Fetching image for:', cityName); // Debug log
-      setIsLoading(true);
-      
-      try {
-        const response = await axios.get(`/api/background`, {          params: { city: cityName,Forecast: CurrentCondition },
-        });
 
-        //console.log('API Response:', response.data); // Debug log
+      setIsLoading(true);
+
+      try {
+        const response = await axios.get(`/api/background`, {
+          params: { city: cityName, Forecast: CurrentCondition },
+        });
 
         if (response.data && response.data.image_url) {
           // Pre-load image
           const img = new Image();
           img.onload = () => {
-            console.log('Image loaded successfully'); // Debug log
             setBackgroundUrl(response.data.image_url);
             setIsLoading(false);
           };
           img.onerror = (e) => {
-            console.error('Error loading image:', e); // Debug log
+            console.error('Error loading image:', e);
             setBackgroundUrl(`https://source.unsplash.com/1600x900/?${cityName},city`);
             setIsLoading(false);
           };
