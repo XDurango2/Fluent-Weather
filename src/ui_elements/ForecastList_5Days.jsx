@@ -342,7 +342,7 @@ const ForecastList = ({
           setIsPanelOpen(false);
           setSelectedHourContent(null);
         }}
-        type={PanelType.Small}
+        type={PanelType.medium}
         headerText={selectedHourContent ? 
           `Pronóstico para las ${new Date(selectedHourContent.time.replace(' ', 'T')).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 
           "Detalles del pronóstico"
