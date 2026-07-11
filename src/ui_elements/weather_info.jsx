@@ -112,7 +112,9 @@ const WeatherInfo = ({
   
   return (
     <CityBackground
-      cityName={weatherData.location.name}
+      cityName={[weatherData.location.name, weatherData.location.region, weatherData.location.country]
+        .filter(Boolean)
+        .join(', ')}
       darkMode={darkMode}
       CurrentCondition={weatherData.current.condition.text}
     >
