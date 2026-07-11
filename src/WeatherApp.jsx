@@ -44,6 +44,7 @@ const WeatherApp = () => {
   const [extendedForecast, setExtendedForecast] = useState(null);
   const [extendedForecastLoading, setExtendedForecastLoading] = useState(false);
   const [extendedForecastError, setExtendedForecastError] = useState(null);
+  const [locating, setLocating] = useState(false);
 
   // And replace them with simple field selectors if needed
 const temperatureField = temperatureUnit === 'celsius' ? 'temp_c' : 'temp_f';
@@ -124,6 +125,27 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
       setError('Formato de nombre de ciudad no válido');
     }
   };
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setError('La geolocalización no está disponible en este navegador');
+      return;
+    }
+
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setCity(`${latitude},${longitude}`);
+        setLocating(false);
+      },
+      (geoError) => {
+        setError('No se pudo obtener tu ubicación: ' + geoError.message);
+        setLocating(false);
+      },
+      { timeout: 10000 }
+    );
+  };
+
   const handleComparisonCityChange = async (newCity) => {
     if (!newCity?.trim()) return;
     
@@ -177,14 +199,12 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
           <Header darkMode={darkMode} />
 
           <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
-            <SearchForm 
+            <SearchForm
               searchCity={searchCity}
               setSearchCity={setSearchCity}
               handleSearch={handleSearch}
-              getCurrentLocationWeather={() => {
-                alert('En una implementación real, esto obtendría tu ubicación actual.');
-                setCity('Your Location');
-              }}
+              getCurrentLocationWeather={handleUseCurrentLocation}
+              locating={locating}
             />
             <Stack horizontal tokens={{ childrenGap: 8 }}>
             {showComparison && !isSettingsPanelOpen && (
