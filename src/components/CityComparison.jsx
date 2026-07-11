@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Stack, Text, Spinner, SpinnerSize, TextField, PrimaryButton, Panel, PanelType } from '@fluentui/react';
 import WeatherInfo from '../ui_elements/weather_info';

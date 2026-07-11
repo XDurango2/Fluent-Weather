@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Stack, Separator, IconButton, Text, Icon, Panel, PanelType, AnimationStyles, mergeStyles, DefaultButton } from '@fluentui/react';
-import { weatherIconMap, getNormalizedWeatherIcon, getWindDirectionAngle } from './utils';
+import { getNormalizedWeatherIcon, getWindDirectionAngle } from './utils';
 import { Card } from '@fluentui/react-card';
 
 const ForecastList = ({ 

@@ -1,7 +1,7 @@
 import React, { forwardRef, useState } from 'react';
 import { Stack, Text, Icon, Panel, PanelType } from '@fluentui/react';
 import { Card } from '@fluentui/react-card';
-import { getNormalizedWeatherIcon, weatherIconMap } from './utils';
+import { getNormalizedWeatherIcon } from './utils';
 
 const HourlyForecast = forwardRef(({ 
   hourlyData = [], 

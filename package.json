@@ -12,7 +12,7 @@
     "@types/node": "^14.18.63",
     "@types/react": "^17.0.85",
     "@types/react-dom": "^17.0.26",
-    "axios": "^1.8.4",
+    "axios": "^1.18.1",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

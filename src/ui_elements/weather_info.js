@@ -23,14 +23,6 @@ const WeatherInfo = ({
     return <Text>No weather data available</Text>;
   }
   
-  // Internal conversion function that doesn't depend on props
-  const handleTempConversion = (temp) => {
-    if (temperatureUnit === 'fahrenheit') {
-      return Math.round((temp * 9/5) + 32);
-    }
-    return Math.round(temp);
-  };
-
   const getWeatherIcon = (condition) => {
     const iconName = weatherIconMap[condition] || 'ErrorBadge';
     return iconName;

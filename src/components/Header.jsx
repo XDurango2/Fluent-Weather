@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Text, Toggle } from '@fluentui/react';
+import { Stack, Text } from '@fluentui/react';
 
 const Header = ({ darkMode }) => {
   return (
