@@ -12,35 +12,45 @@ this is a website Demo that uses Fluent components to make a weather forecast we
  - dynamic icons based on the forecast
  - dynamic background based on the forecast and city
  - forecast comparsion between cities
+ - geolocation-based city search (use your current location instead of typing a city)
  - Dark Mode Works! 
 
+## Tech Stack
 
+- Frontend: React 17 + Fluent UI, bundled with [Vite](https://vitejs.dev)
+- Backend: Flask ([back/background.py](back/background.py)), deployed as a Vercel Python function
+- Testing: Vitest + Testing Library
+- Data: [weatherapi.com](https://www.weatherapi.com) for forecasts, [Pexels](https://www.pexels.com) for background images
 
-
-## installation
+## Installation
 
 ```bash
-git clone https://github.com/XDurango2/fluentweather.git
-cd fluentweather
-cd fluent_weather
+git clone https://github.com/XDurango2/Fluent-Weather.git
+cd Fluent-Weather
 npm install
-npm start
+npm run dev
 ```
 
+The frontend expects the API at `/api/*`. Locally that means either running against a deployed backend (see `server.proxy` in `vite.config.ts`) or deploying the whole project to Vercel, which serves both from the same domain (see `vercel.json`).
+
+The backend (`back/background.py`) needs two environment variables, not included in the repo:
+- `WEATHER_API_KEY` — from [weatherapi.com](https://www.weatherapi.com)
+- `PEXELS_API_KEY` — from [pexels.com](https://www.pexels.com/api)
 
 ## Available Scripts
-npm start – Run in development mode
+npm run dev – Run in development mode
 
-npm test – Launch the test runner
+npm test – Run the test suite (Vitest)
 
-npm run build – Create production-ready build
+npm run build – Create a production-ready build in `dist/`
+
+npm run preview – Serve the production build locally
 
 PLEASE, NOTE: the backend of the project is in back/background.py
 
 ## Roadmap
 
 - Support for multiple languages
-- Geolocation-based city selection
 - Weather alerts integration
 - Real-time weather maps
 ## Powered By
