@@ -144,8 +144,8 @@ const SettingsPanel = ({
         >
           <Image 
             src={darkMode 
-              ? "https://www.pexels.com/assets/static/images/meta/pexels-logo-white.svg" 
-              : "https://www.pexels.com/assets/static/images/meta/pexels-logo.svg"
+              ? "https://static.pexels.com/1/images/meta/pexels-logo-white.svg" 
+              : "https://static.pexels.com/1/images/meta/pexels-logo.svg"
             }
             alt="Pexels Logo"
             width={80}

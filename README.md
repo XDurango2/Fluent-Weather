@@ -56,7 +56,7 @@ PLEASE, NOTE: the backend of the project is in back/background.py
 ## Powered By
 
 Photos provided with  
-<img src="https://pexels.com/assets/static/images/meta/pexels-logo.svg" alt="Pexels" width="100"/>
+<img src="https://static.pexels.com/1/images/meta/pexels-logo-white.svg" alt="Pexels" width="100"/>
 
 Weather data provided by <img src= "https://cdn.weatherapi.com/v4/images/weatherapi_logo.png" alt=weatherapi.com width ="100">
 
