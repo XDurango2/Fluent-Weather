@@ -9,6 +9,7 @@ import ForecastDetailPanel from '../ui_elements/ForecastDetailPanel';
 import UVScale from '../ui_elements/UV_scale';
 import UVHourly from '../ui_elements/UV_hourly';
 import AirQuality from '../ui_elements/AirQuality';
+import SunriseSunset from '../ui_elements/SunriseSunset';
 
 const WeatherDashboard = ({
   weatherData,
@@ -81,6 +82,10 @@ const WeatherDashboard = ({
 
       <div style={{ transition: 'all 0.5s ease' }}>
         <AirQuality airQuality={weatherData?.current?.air_quality} darkMode={darkMode} />
+      </div>
+
+      <div style={{ transition: 'all 0.5s ease' }}>
+        <SunriseSunset astro={weatherData?.forecast?.forecastday?.[0]?.astro} />
       </div>
 
       {showUVPanel && weatherData?.hourly && (

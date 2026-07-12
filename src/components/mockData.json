@@ -967,6 +967,36 @@
         "expires": "2021-02-21T20:00:00+00:00",
         "desc": "Strong winds are expected to affect the region, with gusts up to 70 km/h possible.",
         "instruction": "Secure loose outdoor objects and avoid driving high-sided vehicles."
+      },
+      {
+        "headline": "Amber Warning: Rain",
+        "msgtype": "Alert",
+        "severity": "Severe",
+        "urgency": "Expected",
+        "areas": "Greater London",
+        "category": "Met",
+        "certainty": "Likely",
+        "event": "Rain Warning",
+        "note": "",
+        "effective": "2021-02-21T08:00:00+00:00",
+        "expires": "2021-02-21T20:00:00+00:00",
+        "desc": "Heavy rain expected, with localized flooding possible.",
+        "instruction": "Avoid low-lying areas and do not drive through flood water."
+      },
+      {
+        "headline": "Red Warning: Extreme Heat",
+        "msgtype": "Alert",
+        "severity": "Extreme",
+        "urgency": "Expected",
+        "areas": "Greater London",
+        "category": "Met",
+        "certainty": "Likely",
+        "event": "Heat Warning",
+        "note": "",
+        "effective": "2021-02-21T08:00:00+00:00",
+        "expires": "2021-02-21T20:00:00+00:00",
+        "desc": "Dangerously high temperatures expected across the region.",
+        "instruction": "Stay hydrated and avoid outdoor activity during peak hours."
       }
     ]
   }
