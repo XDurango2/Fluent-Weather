@@ -2,6 +2,7 @@
 import React, { useRef, useState } from 'react';
 import { DefaultButton, Stack, Text, IconButton, Spinner, SpinnerSize } from '@fluentui/react';
 import WeatherInfo from '../ui_elements/weather_info';
+import WeatherAlerts from '../ui_elements/WeatherAlerts';
 import HourlyForecast from '../ui_elements/HourlyForecast';
 import ForecastList from '../ui_elements/ForecastList_5Days';
 import ForecastDetailPanel from '../ui_elements/ForecastDetailPanel';
@@ -59,9 +60,11 @@ const WeatherDashboard = ({
 
   return (
     <>
+      <WeatherAlerts alerts={weatherData?.alerts} darkMode={darkMode} />
+
        <div style={{ transition: 'all 0.5s ease' }}>
         <Stack horizontal horizontalAlign="space-between" verticalAlign="center">
-          <WeatherInfo 
+          <WeatherInfo
             weatherData={weatherData} 
             darkMode={darkMode} 
             temperatureUnit={temperatureUnit}

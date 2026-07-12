@@ -81,5 +81,19 @@ def get_forecast_weekly():
         return jsonify(api_response)
     except ApiException as e:
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/api/weather/week', methods=['GET'])
+def get_weather_alerts():
+    city = request.args.get('city', '')
+    api_instance = weatherapi.APIsApi(weatherapi.ApiClient(configuration))
+    
+    if not city:
+        return jsonify({'error': 'Missing city parameter'}), 400
+
+    try:
+        api_response = api_instance.forecast_weather(city, days=7, alerts="yes", aqi="yes")
+        return jsonify(api_response)
+    except ApiException as e:
+        return jsonify({'error': str(e)}), 500
 
 # OJO: No pongas app.run() aquí

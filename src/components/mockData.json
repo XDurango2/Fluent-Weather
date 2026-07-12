@@ -951,5 +951,23 @@
       }
     ]
   },
-  "alert": {}
+  "alerts": {
+    "alert": [
+      {
+        "headline": "Yellow Warning: Wind",
+        "msgtype": "Alert",
+        "severity": "Moderate",
+        "urgency": "Expected",
+        "areas": "Greater London",
+        "category": "Met",
+        "certainty": "Likely",
+        "event": "Wind Warning",
+        "note": "",
+        "effective": "2021-02-21T08:00:00+00:00",
+        "expires": "2021-02-21T20:00:00+00:00",
+        "desc": "Strong winds are expected to affect the region, with gusts up to 70 km/h possible.",
+        "instruction": "Secure loose outdoor objects and avoid driving high-sided vehicles."
+      }
+    ]
+  }
   }
