@@ -1,10 +1,8 @@
 import React, {useState} from 'react';
 import { Stack, Text, Icon, Panel, PanelType } from '@fluentui/react';
-import { 
-  airQualityIconMap, 
-  weatherIconMap, 
-  getWindDirectionAngle, 
-  getAirQualityLabel 
+import {
+  weatherIconMap,
+  getWindDirectionAngle,
 } from './utils';
 import CityBackground from '../components/cityBackground';
 
@@ -14,7 +12,6 @@ const WeatherInfo = ({
   temperatureUnit,
   windUnit,
 }) => {
-  const [isAirQualityPanelOpen, setIsAirQualityPanelOpen] = useState(false);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
 
   if (!weatherData) {
@@ -73,38 +70,6 @@ const WeatherInfo = ({
               `${current.gust_kph} km/h` : 
               `${current.gust_mph} mph`}
           </Text>
-        </Stack>
-      </Stack>
-    );
-  };
-  
-  const renderAirQualityDetails = () => {
-    const airQuality = weatherData.current.air_quality;
-    return (
-      <Stack tokens={{ childrenGap: 15 }}>
-        <Stack horizontal horizontalAlign="space-between">
-          <Text>CO:</Text>
-          <Text>{airQuality.co.toFixed(1)} μg/m³</Text>
-        </Stack>
-        <Stack horizontal horizontalAlign="space-between">
-          <Text>NO₂:</Text>
-          <Text>{airQuality.no2.toFixed(1)} μg/m³</Text>
-        </Stack>
-        <Stack horizontal horizontalAlign="space-between">
-          <Text>O₃:</Text>
-          <Text>{airQuality.o3.toFixed(1)} μg/m³</Text>
-        </Stack>
-        <Stack horizontal horizontalAlign="space-between">
-          <Text>SO₂:</Text>
-          <Text>{airQuality.so2.toFixed(1)} μg/m³</Text>
-        </Stack>
-        <Stack horizontal horizontalAlign="space-between">
-          <Text>PM2.5:</Text>
-          <Text>{airQuality.pm2_5.toFixed(1)} μg/m³</Text>
-        </Stack>
-        <Stack horizontal horizontalAlign="space-between">
-          <Text>PM10:</Text>
-          <Text>{airQuality.pm10.toFixed(1)} μg/m³</Text>
         </Stack>
       </Stack>
     );
@@ -190,45 +155,6 @@ const WeatherInfo = ({
                   `${weatherData.current.wind_mph} mph`}
               </Text>
             </Stack>
-            
-            {weatherData.current.air_quality && (
-              <>
-                <Stack 
-                  horizontal 
-                  verticalAlign="center" 
-                  tokens={{ childrenGap: 10 }} 
-                  style={{ 
-                    marginTop: 10,
-                    cursor: 'pointer'
-                  }}
-                  onClick={() => setIsAirQualityPanelOpen(true)}
-                >
-                  <Icon 
-                    iconName={airQualityIconMap[weatherData.current.air_quality['us-epa-index']]} 
-                    style={{ fontSize: 20, color: darkMode ? '#00b7ff' : '#0078d4' }} 
-                  />
-                  <Text variant="medium">
-                    Calidad del aire: {getAirQualityLabel(weatherData.current.air_quality['us-epa-index'])}
-                  </Text>
-                </Stack>
-
-                <Panel
-                  isOpen={isAirQualityPanelOpen}
-                  onDismiss={() => setIsAirQualityPanelOpen(false)}
-                  headerText="Detalles de Calidad del Aire"
-                  type={PanelType.Small}
-                  closeButtonAriaLabel="Cerrar"
-                  styles={{
-                    main: {
-                      backgroundColor: darkMode ? '#202020' : '#F3F2F1',
-                      color: darkMode ? '#ffffff' : '#000000'
-                    }
-                  }}
-                >
-                  {renderAirQualityDetails()}
-                </Panel>
-              </>
-            )}
 
             <Panel
               isOpen={isDetailsPanelOpen}

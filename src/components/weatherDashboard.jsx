@@ -8,6 +8,7 @@ import ForecastList from '../ui_elements/ForecastList_5Days';
 import ForecastDetailPanel from '../ui_elements/ForecastDetailPanel';
 import UVScale from '../ui_elements/UV_scale';
 import UVHourly from '../ui_elements/UV_hourly';
+import AirQuality from '../ui_elements/AirQuality';
 
 const WeatherDashboard = ({
   weatherData,
@@ -73,6 +74,23 @@ const WeatherDashboard = ({
          
         </Stack>
       </div>
+
+      <div style={{ transition: 'all 0.5s ease' }}>
+        {weatherData?.current?.uv !== undefined && <UVScale uvIndex={weatherData.current.uv} />}
+      </div>
+
+      <div style={{ transition: 'all 0.5s ease' }}>
+        <AirQuality airQuality={weatherData?.current?.air_quality} darkMode={darkMode} />
+      </div>
+
+      {showUVPanel && weatherData?.hourly && (
+        <div style={{ transition: 'all 0.5s ease' }}>
+          <UVHourly
+            data={weatherData.hourly}
+            title="Índice UV por hora"
+          />
+        </div>
+      )}
 
       <Stack style={{ marginTop: 20, transition: 'all 0.5s ease' }}>
         <Text variant="large">Pronóstico por Hora</Text>
@@ -143,19 +161,6 @@ const WeatherDashboard = ({
         convertWind={convertWind} 
         windUnit={windUnit}
       />
-
-      <div style={{ transition: 'all 0.5s ease' }}>
-        {weatherData?.current?.uv !== undefined && <UVScale uvIndex={weatherData.current.uv} />}
-      </div>
-      
-      {showUVPanel && weatherData?.hourly && (
-        <div style={{ transition: 'all 0.5s ease' }}>
-          <UVHourly 
-            data={weatherData.hourly} 
-            title="Índice UV por hora" 
-          />
-        </div>
-      )}
     </>
   );
 };
