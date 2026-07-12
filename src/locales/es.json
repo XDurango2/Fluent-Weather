@@ -50,7 +50,22 @@
     "title": "Alertas Meteorológicas",
     "from": "Desde",
     "to": "Hasta",
-    "affectedAreas": "Áreas afectadas"
+    "affectedAreas": "Áreas afectadas",
+    "cancelled": "Alerta cancelada",
+    "urgencyLevels": {
+      "Immediate": "Inmediata",
+      "Expected": "Esperada",
+      "Future": "Futura",
+      "Past": "Pasada",
+      "Unknown": "Desconocida"
+    },
+    "certaintyLevels": {
+      "Observed": "Observada",
+      "Likely": "Probable",
+      "Possible": "Posible",
+      "Unlikely": "Improbable",
+      "Unknown": "Desconocida"
+    }
   },
   "airQuality": {
     "title": "Calidad del Aire",

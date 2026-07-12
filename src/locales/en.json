@@ -50,7 +50,22 @@
     "title": "Weather Alerts",
     "from": "From",
     "to": "To",
-    "affectedAreas": "Affected areas"
+    "affectedAreas": "Affected areas",
+    "cancelled": "Alert cancelled",
+    "urgencyLevels": {
+      "Immediate": "Immediate",
+      "Expected": "Expected",
+      "Future": "Future",
+      "Past": "Past",
+      "Unknown": "Unknown"
+    },
+    "certaintyLevels": {
+      "Observed": "Observed",
+      "Likely": "Likely",
+      "Possible": "Possible",
+      "Unlikely": "Unlikely",
+      "Unknown": "Unknown"
+    }
   },
   "airQuality": {
     "title": "Air Quality",

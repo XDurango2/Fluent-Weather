@@ -9,6 +9,8 @@ const severityStyles = {
   Minor: { color: '#000000', backgroundColor: '#c3e4b5', icon: 'Info' },
 };
 
+const cancelledStyle = { color: '#000000', backgroundColor: '#c3e4b5', icon: 'CheckMark' };
+
 const severityOrder = ['Extreme', 'Severe', 'Moderate', 'Minor'];
 
 const getSeverityStyle = (severity) => severityStyles[severity] || severityStyles.Minor;
@@ -35,9 +37,19 @@ const formatAlertDate = (value) => {
   });
 };
 
+const badgeStyle = (color) => ({
+  border: `1px solid ${color}`,
+  borderRadius: 999,
+  padding: '2px 10px',
+  fontSize: 12,
+  color,
+  opacity: 0.9,
+});
+
 const AlertCard = ({ alert }) => {
   const { t } = useTranslation();
-  const style = getSeverityStyle(alert.severity);
+  const isCancelled = alert.msgtype === 'Cancel';
+  const style = isCancelled ? cancelledStyle : getSeverityStyle(alert.severity);
   const cardClass = mergeStyles({
     backgroundColor: style.backgroundColor,
     color: style.color,
@@ -55,6 +67,27 @@ const AlertCard = ({ alert }) => {
           {alert.headline || alert.event}
         </Text>
       </Stack>
+
+      {isCancelled && (
+        <Text variant="small" style={{ color: style.color, fontWeight: 'bold' }}>
+          {t('alerts.cancelled')}
+        </Text>
+      )}
+
+      {(alert.urgency || alert.certainty) && (
+        <Stack horizontal wrap tokens={{ childrenGap: 8 }}>
+          {alert.urgency && (
+            <Text style={badgeStyle(style.color)}>
+              {t(`alerts.urgencyLevels.${alert.urgency}`, { defaultValue: alert.urgency })}
+            </Text>
+          )}
+          {alert.certainty && (
+            <Text style={badgeStyle(style.color)}>
+              {t(`alerts.certaintyLevels.${alert.certainty}`, { defaultValue: alert.certainty })}
+            </Text>
+          )}
+        </Stack>
+      )}
 
       {(effective || expires) && (
         <Text variant="small" style={{ color: style.color }}>
