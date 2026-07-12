@@ -48,6 +48,43 @@ const SunriseSunset = ({ astro }) => {
           </Stack>
         </Stack>
       </Stack>
+
+      {astro.moon_phase && (
+        <Stack
+          horizontal
+          verticalAlign="center"
+          tokens={{ childrenGap: 10 }}
+          style={{
+            marginTop: 10,
+            padding: '12px 16px',
+            borderRadius: 4,
+            backgroundColor: 'rgba(120, 120, 150, 0.15)',
+          }}
+        >
+          <Icon iconName="ClearNight" style={{ fontSize: 28, color: '#7878A0' }} />
+          <Stack style={{ flex: 1 }}>
+            <Text variant="small" style={{ opacity: 0.8 }}>{t('moon.title')}</Text>
+            <Text variant="large" style={{ fontWeight: 'bold' }}>
+              {t(`moon.phases.${astro.moon_phase}`, { defaultValue: astro.moon_phase })}
+            </Text>
+            {astro.moon_illumination !== undefined && (
+              <Text variant="small" style={{ opacity: 0.8 }}>
+                {t('moon.illumination')}: {astro.moon_illumination}%
+              </Text>
+            )}
+          </Stack>
+          {(astro.moonrise || astro.moonset) && (
+            <Stack style={{ textAlign: 'right' }}>
+              {astro.moonrise && (
+                <Text variant="small">{t('moon.moonrise')}: {astro.moonrise}</Text>
+              )}
+              {astro.moonset && (
+                <Text variant="small">{t('moon.moonset')}: {astro.moonset}</Text>
+              )}
+            </Stack>
+          )}
+        </Stack>
+      )}
     </Stack>
   );
 };

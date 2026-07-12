@@ -34,6 +34,7 @@
   },
   "weatherInfo": {
     "currentForecast": "(Current Forecast)",
+    "localTime": "Local time",
     "detailsTitle": "Forecast Details",
     "feelsLike": "Feels like",
     "humidity": "Humidity",
@@ -69,6 +70,22 @@
     "title": "Sunrise and Sunset",
     "sunrise": "Sunrise",
     "sunset": "Sunset"
+  },
+  "moon": {
+    "title": "Moon Phase",
+    "illumination": "Illumination",
+    "moonrise": "Moonrise",
+    "moonset": "Moonset",
+    "phases": {
+      "New Moon": "New Moon",
+      "Waxing Crescent": "Waxing Crescent",
+      "First Quarter": "First Quarter",
+      "Waxing Gibbous": "Waxing Gibbous",
+      "Full Moon": "Full Moon",
+      "Waning Gibbous": "Waning Gibbous",
+      "Last Quarter": "Last Quarter",
+      "Waning Crescent": "Waning Crescent"
+    }
   },
   "uv": {
     "index": "UV Index",

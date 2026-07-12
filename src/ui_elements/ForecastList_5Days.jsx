@@ -214,8 +214,8 @@ const ForecastList = ({
                       hour12: true 
                     }) : 'N/A'}
                   </Text>
-                  <Icon 
-                    iconName={getNormalizedWeatherIcon(hour.condition.text)} 
+                  <Icon
+                    iconName={getNormalizedWeatherIcon(hour.condition.text, hour.is_day !== 0)}
                     style={{ 
                       fontSize: 32,
                       color: '#0078d4',

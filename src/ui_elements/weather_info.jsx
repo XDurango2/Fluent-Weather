@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { Stack, Text, Icon, Panel, PanelType } from '@fluentui/react';
 import { useTranslation } from 'react-i18next';
 import {
-  weatherIconMap,
+  getNormalizedWeatherIcon,
   getWindDirectionAngle,
 } from './utils';
 import CityBackground from '../components/cityBackground';
@@ -13,7 +13,7 @@ const WeatherInfo = ({
   temperatureUnit,
   windUnit,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
 
   if (!weatherData) {
@@ -21,8 +21,18 @@ const WeatherInfo = ({
   }
   
   const getWeatherIcon = (condition) => {
-    const iconName = weatherIconMap[condition] || 'ErrorBadge';
-    return iconName;
+    return getNormalizedWeatherIcon(condition, weatherData.current.is_day !== 0);
+  };
+
+  const formatLocalTime = (localtime) => {
+    if (!localtime) return null;
+    const match = localtime.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{1,2}):(\d{2})$/);
+    if (!match) return null;
+    const [, year, month, day, hour, minute] = match;
+    const date = new Date(year, month - 1, day, hour, minute);
+    if (isNaN(date.getTime())) return null;
+    const dateLocale = i18n.language === 'en' ? 'en-US' : 'es-ES';
+    return date.toLocaleTimeString(dateLocale, { hour: '2-digit', minute: '2-digit' });
   };
   
   const renderWeatherDetails = () => {
@@ -105,6 +115,12 @@ const WeatherInfo = ({
           </Text>
           <Text variant="mediumPlus"> {t('weatherInfo.currentForecast')} </Text>
         </Stack>
+
+        {formatLocalTime(weatherData.location.localtime) && (
+          <Text variant="small" style={{ opacity: 0.85 }}>
+            {t('weatherInfo.localTime')}: {formatLocalTime(weatherData.location.localtime)}
+          </Text>
+        )}
 
         <Stack horizontal style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
           <Stack>

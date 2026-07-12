@@ -151,8 +151,8 @@ const HourlyForecast = forwardRef(({
                   hour12: true 
                 }) : 'N/A'}
               </Text>
-              <Icon 
-                iconName={getNormalizedWeatherIcon(description)}
+              <Icon
+                iconName={getNormalizedWeatherIcon(description, hour.is_day !== 0)}
                 style={{ 
                   fontSize: 32,
                   color: darkMode ? '#00b7ff' : '#0078d4',

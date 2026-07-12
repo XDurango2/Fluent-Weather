@@ -49,10 +49,11 @@ const generateForecastData = (baseData) => {
     temp: hour.temp_c,
     temp_c: hour.temp_c,
     temp_f: hour.temp_f,
-    weather: [{ 
+    weather: [{
       description: hour.condition.text,
       icon: hour.condition.icon.replace("//cdn", "https://cdn")
     }],
+    is_day: hour.is_day,
     humidity: hour.humidity,
     wind_kph: hour.wind_kph,
     wind_mph: hour.wind_mph,
@@ -128,6 +129,7 @@ const generateExtendedForecastData = (baseData) => {
         temp_c: hour.temp_c,
         temp_f: hour.temp_f,
         condition: hour.condition,
+        is_day: hour.is_day,
         wind_kph: hour.wind_kph,
         wind_mph: hour.wind_mph,
         wind_degree: hour.wind_degree,

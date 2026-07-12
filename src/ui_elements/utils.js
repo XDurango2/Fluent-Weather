@@ -22,45 +22,55 @@ export const airQualityIconMap = {
 };
 
 export const weatherIconMap = {
-  'Sunny': 'Sunny',
-  'Partly Cloudy': 'PartlyCloudyDay',
-  'Cloudy': 'CloudWeather',
-  'Overcast': 'Cloudy',
-  'Mist': 'Fog',
-  'Patchy rain possible' : 'RainShowersDay',
-  'Light rain': 'Precipitation',
-  'Moderate rain': 'WeatherRain',
-  'Heavy rain': 'WeatherRainShowersDay',
-  'Thunder': 'Thunderstorms',
-  'Snow': 'Snow',
-  'Light snow': 'WeatherFlurries',
-  'Heavy snow': 'WeatherSnow',
-  'Clear': 'ClearNight',
-  'Fog': 'Fog',
-  'Windy': 'Squalls',
-  'Blowing snow': 'BlowingSnow',
+  'sunny': 'Sunny',
+  'partly cloudy': 'PartlyCloudyDay',
+  'cloudy': 'CloudWeather',
+  'overcast': 'Cloudy',
+  'mist': 'Fog',
+  'patchy rain possible': 'RainShowersDay',
+  'light rain': 'Precipitation',
+  'moderate rain': 'WeatherRain',
+  'heavy rain': 'WeatherRainShowersDay',
+  'thunder': 'Thunderstorms',
+  'snow': 'Snow',
+  'light snow': 'WeatherFlurries',
+  'heavy snow': 'WeatherSnow',
+  'clear': 'ClearNight',
+  'fog': 'Fog',
+  'windy': 'Squalls',
+  'blowing snow': 'BlowingSnow',
 };
 
+// Algunas condiciones de WeatherAPI usan el mismo texto de día y de noche
+// (a diferencia de "Sunny"/"Clear", que ya vienen diferenciados). Para esos
+// casos usamos un ícono nocturno alternativo cuando is_day === 0.
+const weatherIconMapNight = {
+  'sunny': 'ClearNight',
+  'partly cloudy': 'PartlyCloudyNight',
+  'patchy rain possible': 'RainShowersNight',
+  'light snow': 'SnowShowerNight',
+};
 
 export const getAirQualityLabel = (index, t) => {
   return t(`airQuality.levels.${index}`, { defaultValue: t('airQuality.levels.unknown') });
 };
 // Agregar esta nueva función de ayuda
 // Función mejorada para obtener el icono normalizado
-export const getNormalizedWeatherIcon = (condition) => {
+export const getNormalizedWeatherIcon = (condition, isDay = true) => {
   if (!condition) return 'Weather'; // icono por defecto
-  
+
   // Normalizar el texto: convertir a minúsculas y eliminar espacios extra
-  const normalizedCondition = condition.trim();
-  
-  // Buscar el icono en el mapa
-  const iconName = weatherIconMap[normalizedCondition];
-  
+  const normalizedCondition = condition.trim().toLowerCase();
+
+  // Buscar el icono en el mapa, priorizando la variante nocturna si aplica
+  const iconName = (!isDay && weatherIconMapNight[normalizedCondition]) ||
+    weatherIconMap[normalizedCondition];
+
   // Si no se encuentra una coincidencia exacta, buscar coincidencias parciales
   if (!iconName) {
     if (normalizedCondition.includes('rain')) {
       if (normalizedCondition.includes('patchy') || normalizedCondition.includes('possible')) {
-        return 'RainShowersDay';
+        return isDay ? 'RainShowersDay' : 'RainShowersNight';
       }
       return 'Rain';
     }
@@ -72,6 +82,6 @@ export const getNormalizedWeatherIcon = (condition) => {
     }
     // ... más casos según necesites
   }
-  
+
   return iconName || 'SunQuestionMark'; // retorna el icono encontrado o el icono por defecto
 };
