@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { Stack, Text, Icon, Panel, PanelType } from '@fluentui/react';
+import { useTranslation } from 'react-i18next';
 import {
   weatherIconMap,
   getWindDirectionAngle,
@@ -12,6 +13,7 @@ const WeatherInfo = ({
   temperatureUnit,
   windUnit,
 }) => {
+  const { t } = useTranslation();
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
 
   if (!weatherData) {
@@ -28,46 +30,46 @@ const WeatherInfo = ({
     return (
       <Stack tokens={{ childrenGap: 15 }}>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Sensación térmica:</Text>
+          <Text>{t('weatherInfo.feelsLike')}:</Text>
           <Text>
-            {temperatureUnit === 'celsius' ? 
-              `${Math.round(current.feelslike_c)}°C` : 
+            {temperatureUnit === 'celsius' ?
+              `${Math.round(current.feelslike_c)}°C` :
               `${Math.round(current.feelslike_f)}°F`}
           </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Humedad:</Text>
+          <Text>{t('weatherInfo.humidity')}:</Text>
           <Text>{current.humidity}%</Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Presión:</Text>
+          <Text>{t('weatherInfo.pressure')}:</Text>
           <Text>{current.pressure_mb} mb</Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Visibilidad:</Text>
+          <Text>{t('weatherInfo.visibility')}:</Text>
           <Text>
             {windUnit === 'kmh' ? `${current.vis_km} km` : `${current.vis_miles} mi`}
           </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Índice UV:</Text>
+          <Text>{t('weatherInfo.uvIndex')}:</Text>
           <Text>{current.uv}</Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Precipitación:</Text>
+          <Text>{t('weatherInfo.precipitation')}:</Text>
           <Text>
             {windUnit === 'kmh' ? `${current.precip_mm} mm` : `${current.precip_in} in`}
           </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Nubosidad:</Text>
+          <Text>{t('weatherInfo.cloudiness')}:</Text>
           <Text>{current.cloud}%</Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Ráfagas de viento:</Text>
+          <Text>{t('weatherInfo.windGusts')}:</Text>
           <Text>
-            {windUnit === 'kmh' ? 
-              `${current.gust_kph} km/h` : 
+            {windUnit === 'kmh' ?
+              `${current.gust_kph} km/h` :
               `${current.gust_mph} mph`}
           </Text>
         </Stack>
@@ -101,7 +103,7 @@ const WeatherInfo = ({
           <Text variant="xLarge">
             {weatherData.location.name}, {weatherData.location.country}
           </Text>
-          <Text variant="mediumPlus"> (Pronóstico Actual) </Text>
+          <Text variant="mediumPlus"> {t('weatherInfo.currentForecast')} </Text>
         </Stack>
 
         <Stack horizontal style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
@@ -159,9 +161,9 @@ const WeatherInfo = ({
             <Panel
               isOpen={isDetailsPanelOpen}
               onDismiss={() => setIsDetailsPanelOpen(false)}
-              headerText="Detalles del Pronóstico"
+              headerText={t('weatherInfo.detailsTitle')}
               type={PanelType.Small}
-              closeButtonAriaLabel="Cerrar"
+              closeButtonAriaLabel={t('common.close')}
               styles={{
                 main: {
                   backgroundColor: darkMode ? '#202020' : '#F3F2F1',

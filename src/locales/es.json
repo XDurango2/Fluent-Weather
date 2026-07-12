@@ -1,0 +1,139 @@
+{
+  "search": {
+    "placeholder": "Buscar ciudad...",
+    "button": "Buscar",
+    "useLocation": "Usar mi ubicación actual"
+  },
+  "nav": {
+    "compareCities": "Comparar ciudades",
+    "settings": "Configuración"
+  },
+  "settings": {
+    "title": "Configuración",
+    "theme": "Tema",
+    "darkMode": "Modo oscuro",
+    "lightMode": "Modo claro",
+    "on": "Activado",
+    "off": "Desactivado",
+    "temperatureUnit": "Unidad de temperatura",
+    "windUnit": "Unidad de viento",
+    "language": "Idioma",
+    "additionalOptions": "Opciones adicionales",
+    "showComparisonButton": "Mostrar botón de comparación",
+    "visible": "Visible",
+    "hidden": "Oculto",
+    "photosBy": "Fotos proporcionadas por",
+    "weatherDataBy": "Datos del clima por"
+  },
+  "comparison": {
+    "title": "Comparación del Clima",
+    "placeholder": "Ingrese ciudad para comparar",
+    "compare": "Comparar",
+    "loading": "Cargando datos de comparación...",
+    "prompt": "Ingrese una ciudad para comparar el clima"
+  },
+  "weatherInfo": {
+    "currentForecast": "(Pronóstico Actual)",
+    "detailsTitle": "Detalles del Pronóstico",
+    "feelsLike": "Sensación térmica",
+    "humidity": "Humedad",
+    "pressure": "Presión",
+    "visibility": "Visibilidad",
+    "uvIndex": "Índice UV",
+    "precipitation": "Precipitación",
+    "cloudiness": "Nubosidad",
+    "windGusts": "Ráfagas de viento"
+  },
+  "alerts": {
+    "viewAlerts": "Ver alertas meteorológicas ({{count}})",
+    "title": "Alertas Meteorológicas",
+    "from": "Desde",
+    "to": "Hasta",
+    "affectedAreas": "Áreas afectadas"
+  },
+  "airQuality": {
+    "title": "Calidad del Aire",
+    "epaIndex": "Índice EPA",
+    "detailsTitle": "Detalles de Calidad del Aire",
+    "levels": {
+      "1": "Buena",
+      "2": "Moderada",
+      "3": "Mala",
+      "4": "Muy mala",
+      "5": "Peligrosa",
+      "6": "Extremadamente peligrosa",
+      "unknown": "Desconocida"
+    }
+  },
+  "sunriseSunset": {
+    "title": "Amanecer y Atardecer",
+    "sunrise": "Amanecer",
+    "sunset": "Atardecer"
+  },
+  "uv": {
+    "index": "Índice UV",
+    "low": "Bajo",
+    "moderate": "Moderado",
+    "high": "Alto",
+    "veryHigh": "Muy Alto",
+    "extreme": "Extremo",
+    "adviceLow": "No se necesita protección.",
+    "adviceModerate": "Se recomienda usar protector solar y sombrero.",
+    "adviceHigh": "Usar protector solar SPF 30+, sombrero y gafas de sol.",
+    "adviceVeryHigh": "Evitar el sol de 10 AM a 4 PM. Usar protector solar SPF 50+.",
+    "adviceExtreme": "¡Extremo! Evitar exposición al sol. Usar todas las protecciones posibles.",
+    "hourlyTitle": "Horario del índice UV para hoy:"
+  },
+  "hourlyForecast": {
+    "sectionTitle": "Pronóstico por Hora",
+    "scrollLeft": "Desplazar hacia la izquierda",
+    "scrollRight": "Desplazar hacia la derecha",
+    "detailsFor": "Pronóstico para las {{time}}",
+    "detailsTitle": "Detalles del pronóstico",
+    "temperature": "Temperatura",
+    "feelsLike": "Sensación térmica",
+    "humidity": "Humedad",
+    "wind": "Viento",
+    "windDirection": "Dirección del viento",
+    "pressure": "Presión",
+    "precipitation": "Precipitación",
+    "chanceOfRain": "Probabilidad de lluvia",
+    "cloudiness": "Nubosidad",
+    "visibility": "Visibilidad"
+  },
+  "fiveDayForecast": {
+    "sectionTitle": "Pronóstico a 5 días",
+    "loading": "Cargando pronóstico...",
+    "cardMax": "Máx",
+    "cardMin": "Mín",
+    "panelTemperature": "Temperatura",
+    "panelAverage": "Promedio",
+    "panelMax": "Máxima",
+    "panelMin": "Mínima",
+    "panelWind": "Viento",
+    "panelMaxWind": "Máximo",
+    "panelConditions": "Condiciones",
+    "panelHumidity": "Humedad",
+    "panelUv": "UV",
+    "hourlyTitle": "Pronóstico por hora",
+    "backToDaily": "Volver al pronóstico diario",
+    "detailsFor": "Pronóstico para las {{time}}",
+    "detailsTitle": "Detalles del pronóstico"
+  },
+  "errors": {
+    "loadWeather": "Error al cargar los datos del clima",
+    "loadComparison": "Error al obtener datos de comparación",
+    "loadExtendedForecast": "Error al cargar el pronóstico extendido",
+    "invalidCityFormat": "Formato de nombre de ciudad no válido",
+    "geolocationUnavailable": "La geolocalización no está disponible en este navegador",
+    "geoPermissionDenied": "Permiso de ubicación denegado. Habilítalo en la configuración del navegador.",
+    "geoPositionUnavailable": "No se pudo determinar tu ubicación.",
+    "geoTimeout": "La búsqueda de tu ubicación tardó demasiado. Intenta de nuevo.",
+    "geoGeneric": "No se pudo obtener tu ubicación",
+    "loadingWeather": "Cargando datos del clima...",
+    "retry": "Reintentar"
+  },
+  "common": {
+    "close": "Cerrar"
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "search": {
+    "placeholder": "Search city...",
+    "button": "Search",
+    "useLocation": "Use my current location"
+  },
+  "nav": {
+    "compareCities": "Compare cities",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "on": "On",
+    "off": "Off",
+    "temperatureUnit": "Temperature unit",
+    "windUnit": "Wind unit",
+    "language": "Language",
+    "additionalOptions": "Additional options",
+    "showComparisonButton": "Show comparison button",
+    "visible": "Visible",
+    "hidden": "Hidden",
+    "photosBy": "Photos provided by",
+    "weatherDataBy": "Weather data by"
+  },
+  "comparison": {
+    "title": "Weather Comparison",
+    "placeholder": "Enter city to compare",
+    "compare": "Compare",
+    "loading": "Loading comparison data...",
+    "prompt": "Enter a city to compare the weather"
+  },
+  "weatherInfo": {
+    "currentForecast": "(Current Forecast)",
+    "detailsTitle": "Forecast Details",
+    "feelsLike": "Feels like",
+    "humidity": "Humidity",
+    "pressure": "Pressure",
+    "visibility": "Visibility",
+    "uvIndex": "UV Index",
+    "precipitation": "Precipitation",
+    "cloudiness": "Cloudiness",
+    "windGusts": "Wind gusts"
+  },
+  "alerts": {
+    "viewAlerts": "View weather alerts ({{count}})",
+    "title": "Weather Alerts",
+    "from": "From",
+    "to": "To",
+    "affectedAreas": "Affected areas"
+  },
+  "airQuality": {
+    "title": "Air Quality",
+    "epaIndex": "EPA Index",
+    "detailsTitle": "Air Quality Details",
+    "levels": {
+      "1": "Good",
+      "2": "Moderate",
+      "3": "Unhealthy for sensitive groups",
+      "4": "Unhealthy",
+      "5": "Very unhealthy",
+      "6": "Hazardous",
+      "unknown": "Unknown"
+    }
+  },
+  "sunriseSunset": {
+    "title": "Sunrise and Sunset",
+    "sunrise": "Sunrise",
+    "sunset": "Sunset"
+  },
+  "uv": {
+    "index": "UV Index",
+    "low": "Low",
+    "moderate": "Moderate",
+    "high": "High",
+    "veryHigh": "Very High",
+    "extreme": "Extreme",
+    "adviceLow": "No protection needed.",
+    "adviceModerate": "Sunscreen and a hat are recommended.",
+    "adviceHigh": "Use SPF 30+ sunscreen, a hat, and sunglasses.",
+    "adviceVeryHigh": "Avoid the sun from 10 AM to 4 PM. Use SPF 50+ sunscreen.",
+    "adviceExtreme": "Extreme! Avoid sun exposure. Use all available protection.",
+    "hourlyTitle": "Today's hourly UV index:"
+  },
+  "hourlyForecast": {
+    "sectionTitle": "Hourly Forecast",
+    "scrollLeft": "Scroll left",
+    "scrollRight": "Scroll right",
+    "detailsFor": "Forecast for {{time}}",
+    "detailsTitle": "Forecast details",
+    "temperature": "Temperature",
+    "feelsLike": "Feels like",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "windDirection": "Wind direction",
+    "pressure": "Pressure",
+    "precipitation": "Precipitation",
+    "chanceOfRain": "Chance of rain",
+    "cloudiness": "Cloudiness",
+    "visibility": "Visibility"
+  },
+  "fiveDayForecast": {
+    "sectionTitle": "5-Day Forecast",
+    "loading": "Loading forecast...",
+    "cardMax": "Max",
+    "cardMin": "Min",
+    "panelTemperature": "Temperature",
+    "panelAverage": "Average",
+    "panelMax": "Max",
+    "panelMin": "Min",
+    "panelWind": "Wind",
+    "panelMaxWind": "Max",
+    "panelConditions": "Conditions",
+    "panelHumidity": "Humidity",
+    "panelUv": "UV",
+    "hourlyTitle": "Hourly forecast",
+    "backToDaily": "Back to daily forecast",
+    "detailsFor": "Forecast for {{time}}",
+    "detailsTitle": "Forecast details"
+  },
+  "errors": {
+    "loadWeather": "Error loading weather data",
+    "loadComparison": "Error fetching comparison data",
+    "loadExtendedForecast": "Error loading extended forecast",
+    "invalidCityFormat": "Invalid city name format",
+    "geolocationUnavailable": "Geolocation is not available in this browser",
+    "geoPermissionDenied": "Location permission denied. Enable it in your browser settings.",
+    "geoPositionUnavailable": "Your location could not be determined.",
+    "geoTimeout": "Locating you took too long. Try again.",
+    "geoGeneric": "Could not get your location",
+    "loadingWeather": "Loading weather data...",
+    "retry": "Retry"
+  },
+  "common": {
+    "close": "Close"
+  }
+}

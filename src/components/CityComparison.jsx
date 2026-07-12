@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Stack, Text, Spinner, SpinnerSize, TextField, PrimaryButton, Panel, PanelType } from '@fluentui/react';
+import { useTranslation } from 'react-i18next';
 import WeatherInfo from '../ui_elements/weather_info';
 
 const CityComparison = ({
@@ -18,6 +19,7 @@ const CityComparison = ({
   temperatureUnit,
   windUnit
 }) => {
+  const { t } = useTranslation();
   const [inputCity, setInputCity] = React.useState('');
 
   const handleSubmit = (e) => {
@@ -33,8 +35,8 @@ const CityComparison = ({
       isOpen={showComparison}
       onDismiss={onDismiss}
       type={PanelType.largeFixed}
-      headerText="Comparación del Clima"
-      closeButtonAriaLabel="Cerrar"
+      headerText={t('comparison.title')}
+      closeButtonAriaLabel={t('common.close')}
       styles={{
         main: {
           backgroundColor: darkMode ? '#202020' : '#ffffff',
@@ -52,7 +54,7 @@ const CityComparison = ({
       <Stack tokens={{ childrenGap: 20 }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px' }}>
           <TextField
-            placeholder="Ingrese ciudad para comparar"
+            placeholder={t('comparison.placeholder')}
             value={inputCity}
             onChange={(_, newValue) => setInputCity(newValue || '')}
             styles={{ 
@@ -73,12 +75,12 @@ const CityComparison = ({
               }
             }}
           >
-            Comparar
+            {t('comparison.compare')}
           </PrimaryButton>
         </form>
 
         {comparisonLoading ? (
-          <Spinner size={SpinnerSize.medium} label="Cargando datos de comparación..." />
+          <Spinner size={SpinnerSize.medium} label={t('comparison.loading')} />
         ) : comparisonError ? (
           <Text style={{ color: 'red' }}>{comparisonError}</Text>
         ) : comparisonData ? (
@@ -107,7 +109,7 @@ const CityComparison = ({
             </Stack>
           </Stack>
         ) : (
-          <Text>Ingrese una ciudad para comparar el clima</Text>
+          <Text>{t('comparison.prompt')}</Text>
         )}
       </Stack>
     </Panel>

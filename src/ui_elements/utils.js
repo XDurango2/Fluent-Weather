@@ -42,16 +42,8 @@ export const weatherIconMap = {
 };
 
 
-export const getAirQualityLabel = (index) => {
-  const labels = {
-    1: 'Buena',
-    2: 'Moderada',
-    3: 'Mala',
-    4: 'Muy mala',
-    5: 'Peligrosa',
-    6: 'Extremadamente peligrosa'
-  };
-  return labels[index] || 'Desconocida';
+export const getAirQualityLabel = (index, t) => {
+  return t(`airQuality.levels.${index}`, { defaultValue: t('airQuality.levels.unknown') });
 };
 // Agregar esta nueva función de ayuda
 // Función mejorada para obtener el icono normalizado

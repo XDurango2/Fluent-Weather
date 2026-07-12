@@ -1,11 +1,11 @@
 // src/components/WeatherDashboard.jsx
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { DefaultButton, Stack, Text, IconButton, Spinner, SpinnerSize } from '@fluentui/react';
+import { useTranslation } from 'react-i18next';
 import WeatherInfo from '../ui_elements/weather_info';
 import WeatherAlerts from '../ui_elements/WeatherAlerts';
 import HourlyForecast from '../ui_elements/HourlyForecast';
 import ForecastList from '../ui_elements/ForecastList_5Days';
-import ForecastDetailPanel from '../ui_elements/ForecastDetailPanel';
 import UVScale from '../ui_elements/UV_scale';
 import UVHourly from '../ui_elements/UV_hourly';
 import AirQuality from '../ui_elements/AirQuality';
@@ -23,9 +23,9 @@ const WeatherDashboard = ({
   showUVPanel
 
 }) => {
-  const [selectedForecast, setSelectedForecast] = useState(null);
+  const { t } = useTranslation();
   const hourlyForecastRef = useRef(null);
-  
+
   const scrollLeft = () => {
     if (hourlyForecastRef.current) {
       const clientWidth = hourlyForecastRef.current.clientWidth;
@@ -33,29 +33,13 @@ const WeatherDashboard = ({
       hourlyForecastRef.current.scrollLeft -= scrollAmount;
     }
   };
-  
+
   const scrollRight = () => {
     if (hourlyForecastRef.current) {
       const clientWidth = hourlyForecastRef.current.clientWidth;
       const scrollAmount = Math.min(clientWidth, 300);
       hourlyForecastRef.current.scrollLeft += scrollAmount;
     }
-  };
-
-  // Función local para convertir temperatura
-  const convertTemp = (temp, unit) => {
-    if (unit === 'fahrenheit') {
-      return Math.round((temp * 9/5) + 32);
-    }
-    return Math.round(temp);
-  };
-
-  // Función local para convertir viento
-  const convertWind = (speed, unit) => {
-    if (unit === 'mph') {
-      return Math.round(speed / 1.60934);
-    }
-    return Math.round(speed);
   };
 
   if (!weatherData) return null;
@@ -92,19 +76,19 @@ const WeatherDashboard = ({
         <div style={{ transition: 'all 0.5s ease' }}>
           <UVHourly
             data={weatherData.hourly}
-            title="Índice UV por hora"
+            title={t('uv.hourlyTitle')}
           />
         </div>
       )}
 
       <Stack style={{ marginTop: 20, transition: 'all 0.5s ease' }}>
-        <Text variant="large">Pronóstico por Hora</Text>
+        <Text variant="large">{t('hourlyForecast.sectionTitle')}</Text>
         <Stack horizontal>
           <IconButton
             iconProps={{ iconName: 'ChevronLeft' }}
             onClick={scrollLeft}
-            title="Desplazar hacia la izquierda"
-            ariaLabel="Desplazar hacia la izquierda"
+            title={t('hourlyForecast.scrollLeft')}
+            ariaLabel={t('hourlyForecast.scrollLeft')}
             styles={{
               root: {
                 height: 'fit-content',
@@ -113,9 +97,9 @@ const WeatherDashboard = ({
               }
             }}
           />
-          <HourlyForecast 
+          <HourlyForecast
             ref={hourlyForecastRef}
-            hourlyData={weatherData?.hourly || []} 
+            hourlyData={weatherData?.hourly || []}
             temperatureUnit={temperatureUnit}
             windUnit={windUnit}
             darkMode={darkMode}
@@ -124,8 +108,8 @@ const WeatherDashboard = ({
           <IconButton
             iconProps={{ iconName: 'ChevronRight' }}
             onClick={scrollRight}
-            title="Desplazar hacia la derecha"
-            ariaLabel="Desplazar hacia la derecha"
+            title={t('hourlyForecast.scrollRight')}
+            ariaLabel={t('hourlyForecast.scrollRight')}
             styles={{
               root: {
                 height: 'fit-content',
@@ -138,13 +122,13 @@ const WeatherDashboard = ({
       </Stack>
 
       <Stack style={{ marginTop: 20, transition: 'all 0.5s ease' }}>
-        <Text variant="large">Pronóstico a 5 días</Text>
+        <Text variant="large">{t('fiveDayForecast.sectionTitle')}</Text>
         {extendedForecastLoading ? (
-          <Spinner size={SpinnerSize.large} label="Cargando pronóstico..." />
+          <Spinner size={SpinnerSize.large} label={t('fiveDayForecast.loading')} />
         ) : extendedForecastError ? (
           <Stack tokens={{ childrenGap: 10 }} horizontalAlign="start">
             <Text style={{ color: 'red' }}>{extendedForecastError}</Text>
-            <DefaultButton text="Reintentar" onClick={onRetryExtendedForecast} />
+            <DefaultButton text={t('errors.retry')} onClick={onRetryExtendedForecast} />
           </Stack>
         ) : extendedForecast?.forecast ? (
           <ForecastList
@@ -152,20 +136,9 @@ const WeatherDashboard = ({
             temperatureUnit={temperatureUnit}
             windUnit={windUnit}
             darkMode={darkMode}
-            onForecastSelect={setSelectedForecast}
           />
         ) : null}
       </Stack>
-
-      <ForecastDetailPanel 
-        forecast={selectedForecast} 
-        isOpen={!!selectedForecast} 
-        onDismiss={() => setSelectedForecast(null)} 
-        convertTemp={convertTemp} 
-        temperatureUnit={temperatureUnit} 
-        convertWind={convertWind} 
-        windUnit={windUnit}
-      />
     </>
   );
 };

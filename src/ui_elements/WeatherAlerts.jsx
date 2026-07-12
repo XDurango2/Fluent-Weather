@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Stack, Text, Icon, Panel, PanelType, mergeStyles } from '@fluentui/react';
+import { useTranslation } from 'react-i18next';
 
 const severityStyles = {
   Extreme: { color: '#ffffff', backgroundColor: '#a80000', icon: 'AlertSolid' },
@@ -35,6 +36,7 @@ const formatAlertDate = (value) => {
 };
 
 const AlertCard = ({ alert }) => {
+  const { t } = useTranslation();
   const style = getSeverityStyle(alert.severity);
   const cardClass = mergeStyles({
     backgroundColor: style.backgroundColor,
@@ -56,15 +58,15 @@ const AlertCard = ({ alert }) => {
 
       {(effective || expires) && (
         <Text variant="small" style={{ color: style.color }}>
-          {effective && `Desde: ${effective}`}
+          {effective && `${t('alerts.from')}: ${effective}`}
           {effective && expires && ' — '}
-          {expires && `Hasta: ${expires}`}
+          {expires && `${t('alerts.to')}: ${expires}`}
         </Text>
       )}
 
       {alert.areas && (
         <Text variant="small" style={{ color: style.color }}>
-          Áreas afectadas: {alert.areas}
+          {t('alerts.affectedAreas')}: {alert.areas}
         </Text>
       )}
 
@@ -80,6 +82,7 @@ const AlertCard = ({ alert }) => {
 };
 
 const WeatherAlerts = ({ alerts, darkMode }) => {
+  const { t } = useTranslation();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const alertList = alerts?.alert || [];
 
@@ -116,7 +119,7 @@ const WeatherAlerts = ({ alerts, darkMode }) => {
       >
         <Icon iconName={summaryStyle.icon} style={{ fontSize: 24 }} />
         <Text variant="large" style={{ fontWeight: 'bold', color: summaryStyle.color, flex: 1 }}>
-          Ver alertas meteorológicas ({alertList.length})
+          {t('alerts.viewAlerts', { count: alertList.length })}
         </Text>
         <Icon iconName="ChevronRight" style={{ fontSize: 14, color: summaryStyle.color }} />
       </Stack>
@@ -124,9 +127,9 @@ const WeatherAlerts = ({ alerts, darkMode }) => {
       <Panel
         isOpen={isPanelOpen}
         onDismiss={() => setIsPanelOpen(false)}
-        headerText="Alertas Meteorológicas"
+        headerText={t('alerts.title')}
         type={PanelType.medium}
-        closeButtonAriaLabel="Cerrar"
+        closeButtonAriaLabel={t('common.close')}
         styles={{
           main: {
             backgroundColor: darkMode ? '#202020' : '#F3F2F1',

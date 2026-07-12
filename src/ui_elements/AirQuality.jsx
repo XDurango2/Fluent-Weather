@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Stack, Text, Icon, Panel, PanelType } from '@fluentui/react';
+import { useTranslation } from 'react-i18next';
 import { airQualityIconMap, getAirQualityLabel } from './utils';
 
 const aqiColors = {
@@ -21,6 +22,7 @@ const pollutants = [
 ];
 
 const AirQuality = ({ airQuality, darkMode }) => {
+  const { t } = useTranslation();
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
   if (!airQuality) return null;
@@ -30,7 +32,7 @@ const AirQuality = ({ airQuality, darkMode }) => {
 
   return (
     <Stack style={{ marginTop: 20 }}>
-      <Text variant="large">Calidad del Aire</Text>
+      <Text variant="large">{t('airQuality.title')}</Text>
 
       <Stack
         horizontal
@@ -49,10 +51,10 @@ const AirQuality = ({ airQuality, darkMode }) => {
         <Icon iconName={airQualityIconMap[index]} style={{ fontSize: 28 }} />
         <Stack style={{ flex: 1 }}>
           <Text variant="xLarge" style={{ fontWeight: 'bold', color: colors.text }}>
-            {getAirQualityLabel(index)}
+            {getAirQualityLabel(index, t)}
           </Text>
           <Text variant="small" style={{ color: colors.text }}>
-            Índice EPA: {index ?? 'N/D'}
+            {t('airQuality.epaIndex')}: {index ?? 'N/D'}
           </Text>
         </Stack>
         <Icon iconName="ChevronRight" style={{ fontSize: 14, color: colors.text }} />
@@ -61,9 +63,9 @@ const AirQuality = ({ airQuality, darkMode }) => {
       <Panel
         isOpen={isPanelOpen}
         onDismiss={() => setIsPanelOpen(false)}
-        headerText="Detalles de Calidad del Aire"
+        headerText={t('airQuality.detailsTitle')}
         type={PanelType.Small}
-        closeButtonAriaLabel="Cerrar"
+        closeButtonAriaLabel={t('common.close')}
         styles={{
           main: {
             backgroundColor: darkMode ? '#202020' : '#F3F2F1',

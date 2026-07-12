@@ -1,14 +1,16 @@
 import React, { forwardRef, useState } from 'react';
 import { Stack, Text, Icon, Panel, PanelType } from '@fluentui/react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '@fluentui/react-card';
 import { getNormalizedWeatherIcon } from './utils';
 
-const HourlyForecast = forwardRef(({ 
-  hourlyData = [], 
-  temperatureUnit, 
-  windUnit, 
-  darkMode 
+const HourlyForecast = forwardRef(({
+  hourlyData = [],
+  temperatureUnit,
+  windUnit,
+  darkMode
 }, ref) => {
+  const { t } = useTranslation();
   const [selectedHour, setSelectedHour] = useState(null);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
 
@@ -42,62 +44,62 @@ const HourlyForecast = forwardRef(({
     return (
       <Stack tokens={{ childrenGap: 15 }}>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Temperatura:</Text>
+          <Text>{t('hourlyForecast.temperature')}:</Text>
           <Text>
-            {temperatureUnit === 'celsius' ? 
-              `${Math.round(selectedHour.temp)}°C` : 
+            {temperatureUnit === 'celsius' ?
+              `${Math.round(selectedHour.temp)}°C` :
               `${Math.round(selectedHour.temp_f || convertTemp(selectedHour.temp))}°F`}
           </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Sensación térmica:</Text>
+          <Text>{t('hourlyForecast.feelsLike')}:</Text>
           <Text>
-            {temperatureUnit === 'celsius' ? 
-              `${Math.round(selectedHour.feelslike_c)}°C` : 
+            {temperatureUnit === 'celsius' ?
+              `${Math.round(selectedHour.feelslike_c)}°C` :
               `${Math.round(selectedHour.feelslike_f || convertTemp(selectedHour.feelslike_c))}°F`}
           </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Humedad:</Text>
+          <Text>{t('hourlyForecast.humidity')}:</Text>
           <Text>{selectedHour.humidity}%</Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Viento:</Text>
+          <Text>{t('hourlyForecast.wind')}:</Text>
           <Text>
-            {windUnit === 'kmh' ? 
-              `${selectedHour.wind_kph} km/h` : 
+            {windUnit === 'kmh' ?
+              `${selectedHour.wind_kph} km/h` :
               `${selectedHour.wind_mph} mph`}
           </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Dirección del viento:</Text>
+          <Text>{t('hourlyForecast.windDirection')}:</Text>
           <Text>{selectedHour.wind_dir}</Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Presión:</Text>
+          <Text>{t('hourlyForecast.pressure')}:</Text>
           <Text>{selectedHour.pressure_mb} mb</Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Precipitación:</Text>
+          <Text>{t('hourlyForecast.precipitation')}:</Text>
           <Text>
-            {windUnit === 'kmh' ? 
-              `${selectedHour.precip_mm} mm` : 
+            {windUnit === 'kmh' ?
+              `${selectedHour.precip_mm} mm` :
               `${selectedHour.precip_in} in`}
           </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Probabilidad de lluvia:</Text>
+          <Text>{t('hourlyForecast.chanceOfRain')}:</Text>
           <Text>{selectedHour.chance_of_rain}%</Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Nubosidad:</Text>
+          <Text>{t('hourlyForecast.cloudiness')}:</Text>
           <Text>{selectedHour.cloud}%</Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Visibilidad:</Text>
+          <Text>{t('hourlyForecast.visibility')}:</Text>
           <Text>
-            {windUnit === 'kmh' ? 
-              `${selectedHour.vis_km} km` : 
+            {windUnit === 'kmh' ?
+              `${selectedHour.vis_km} km` :
               `${selectedHour.vis_miles} mi`}
           </Text>
         </Stack>
@@ -180,16 +182,16 @@ const HourlyForecast = forwardRef(({
       <Panel
         isOpen={isDetailsPanelOpen}
         onDismiss={() => setIsDetailsPanelOpen(false)}
-        headerText={selectedHour && selectedHour.time ? 
-          `Pronóstico para las ${formatTime(selectedHour.time).toLocaleTimeString([], { 
-            hour: '2-digit', 
+        headerText={selectedHour && selectedHour.time ?
+          t('hourlyForecast.detailsFor', { time: formatTime(selectedHour.time).toLocaleTimeString([], {
+            hour: '2-digit',
             minute: '2-digit',
             hour12: true
-          })}` : 
-          'Detalles del pronóstico'
+          }) }) :
+          t('hourlyForecast.detailsTitle')
         }
         type={PanelType.Small}
-        closeButtonAriaLabel="Cerrar"
+        closeButtonAriaLabel={t('common.close')}
         styles={{
           main: {
             backgroundColor: darkMode ? '#202020' : '#F3F2F1',

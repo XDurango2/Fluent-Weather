@@ -1,14 +1,16 @@
 import React, { useState, useRef } from 'react';
 import { Stack, Separator, IconButton, Text, Icon, Panel, PanelType, AnimationStyles, mergeStyles, DefaultButton } from '@fluentui/react';
+import { useTranslation } from 'react-i18next';
 import { getNormalizedWeatherIcon, getWindDirectionAngle } from './utils';
 import { Card } from '@fluentui/react-card';
 
-const ForecastList = ({ 
-  forecast = [], 
-  handleForecastClick,
+const ForecastList = ({
+  forecast = [],
   temperatureUnit,
-  windUnit 
+  windUnit
 }) => {
+  const { t, i18n } = useTranslation();
+  const dateLocale = i18n.language === 'en' ? 'en-US' : 'es-ES';
   const [selectedDay, setSelectedDay] = useState(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [selectedHourContent, setSelectedHourContent] = useState(null);
@@ -98,35 +100,35 @@ const ForecastList = ({
     return (
       <Stack tokens={{ childrenGap: 15 }}>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Temperatura:</Text>
+          <Text>{t('fiveDayForecast.panelTemperature')}:</Text>
           <Text>
-            {temperatureUnit === 'celsius' ? 
-              `${Math.round(selectedHourContent.temp_c)}°C` : 
+            {temperatureUnit === 'celsius' ?
+              `${Math.round(selectedHourContent.temp_c)}°C` :
               `${Math.round(selectedHourContent.temp_f)}°F`}
           </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Sensación térmica:</Text>
+          <Text>{t('hourlyForecast.feelsLike')}:</Text>
           <Text>
-            {temperatureUnit === 'celsius' ? 
-              `${Math.round(selectedHourContent.feelslike_c)}°C` : 
+            {temperatureUnit === 'celsius' ?
+              `${Math.round(selectedHourContent.feelslike_c)}°C` :
               `${Math.round(selectedHourContent.feelslike_f)}°F`}
           </Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Humedad:</Text>
+          <Text>{t('fiveDayForecast.panelHumidity')}:</Text>
           <Text>{selectedHourContent.humidity}%</Text>
         </Stack>
         <Stack horizontal horizontalAlign="space-between">
-          <Text>Viento:</Text>
+          <Text>{t('fiveDayForecast.panelWind')}:</Text>
           <Text>
-            {windUnit === 'kmh' ? 
-              `${selectedHourContent.wind_kph} km/h` : 
+            {windUnit === 'kmh' ?
+              `${selectedHourContent.wind_kph} km/h` :
               `${selectedHourContent.wind_mph} mph`}
           </Text>
         </Stack>
-        <DefaultButton 
-          text="Volver al pronóstico diario" 
+        <DefaultButton
+          text={t('fiveDayForecast.backToDaily')}
           onClick={() => setSelectedHourContent(null)}
           styles={{ root: { marginTop: 20 } }}
         />
@@ -142,37 +144,37 @@ const ForecastList = ({
     return (
       <Stack tokens={{ childrenGap: 20 }}>
         <Text variant="xLarge" block>
-          {new Date(selectedDay.date).toLocaleDateString('es-ES', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+          {new Date(selectedDay.date).toLocaleDateString(dateLocale, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
           })}
         </Text>
-        
+
         <Stack horizontal wrap tokens={{ childrenGap: 20 }}>
           <Stack style={{ minWidth: 140 }}>
-            <Text variant="large">Temperatura</Text>
-            <Text>Promedio: {formatTemperature(day.avgtemp_c)}°{getTempUnitSymbol()}</Text>
-            <Text>Máxima: {formatTemperature(day.maxtemp_c)}°{getTempUnitSymbol()}</Text>
-            <Text>Mínima: {formatTemperature(day.mintemp_c)}°{getTempUnitSymbol()}</Text>
-          </Stack>
-          
-          <Stack style={{ minWidth: 140 }}>
-            <Text variant="large">Viento</Text>
-            <Text>Máximo: {formatWindSpeed(day.maxwind_kph)} {getWindUnitSymbol()}</Text>
+            <Text variant="large">{t('fiveDayForecast.panelTemperature')}</Text>
+            <Text>{t('fiveDayForecast.panelAverage')}: {formatTemperature(day.avgtemp_c)}°{getTempUnitSymbol()}</Text>
+            <Text>{t('fiveDayForecast.panelMax')}: {formatTemperature(day.maxtemp_c)}°{getTempUnitSymbol()}</Text>
+            <Text>{t('fiveDayForecast.panelMin')}: {formatTemperature(day.mintemp_c)}°{getTempUnitSymbol()}</Text>
           </Stack>
 
           <Stack style={{ minWidth: 140 }}>
-            <Text variant="large">Condiciones</Text>
-            <Text>Humedad: {day.avghumidity}%</Text>
-            <Text>UV: {day.uv}</Text>
+            <Text variant="large">{t('fiveDayForecast.panelWind')}</Text>
+            <Text>{t('fiveDayForecast.panelMaxWind')}: {formatWindSpeed(day.maxwind_kph)} {getWindUnitSymbol()}</Text>
+          </Stack>
+
+          <Stack style={{ minWidth: 140 }}>
+            <Text variant="large">{t('fiveDayForecast.panelConditions')}</Text>
+            <Text>{t('fiveDayForecast.panelHumidity')}: {day.avghumidity}%</Text>
+            <Text>{t('fiveDayForecast.panelUv')}: {day.uv}</Text>
           </Stack>
         </Stack>
-  
+
         <Separator />
-        
-        <Text variant="large">Pronóstico por hora</Text>
+
+        <Text variant="large">{t('fiveDayForecast.hourlyTitle')}</Text>
         <Stack horizontal verticalAlign="center">
           <IconButton
             iconProps={{ iconName: 'ChevronLeft' }}
@@ -289,20 +291,20 @@ const ForecastList = ({
                 }}
               >
                 <Text variant="medium" style={{ fontWeight: 'bold' }}>
-                  {new Date(day.date).toLocaleDateString('es-ES', { weekday: 'long' })}
+                  {new Date(day.date).toLocaleDateString(dateLocale, { weekday: 'long' })}
                 </Text>
-                <Icon 
-                  iconName={getNormalizedWeatherIcon(day.day.condition.text)} 
-                  style={{ 
-                    fontSize: 32, 
-                    color: '#0078d4', 
-                    margin: '8px 0' 
-                  }} 
+                <Icon
+                  iconName={getNormalizedWeatherIcon(day.day.condition.text)}
+                  style={{
+                    fontSize: 32,
+                    color: '#0078d4',
+                    margin: '8px 0'
+                  }}
                 />
                 <Text>{day.day.condition.text}</Text>
                 <Stack horizontal verticalAlign="space-between" style={{ marginTop: '8px' }}>
-                  <Text>Máx: {formatTemperature(day.day.maxtemp_c)}°{getTempUnitSymbol()}</Text>
-                  <Text>Mín: {formatTemperature(day.day.mintemp_c)}°{getTempUnitSymbol()}</Text>
+                  <Text>{t('fiveDayForecast.cardMax')}: {formatTemperature(day.day.maxtemp_c)}°{getTempUnitSymbol()}</Text>
+                  <Text>{t('fiveDayForecast.cardMin')}: {formatTemperature(day.day.mintemp_c)}°{getTempUnitSymbol()}</Text>
                 </Stack>
                 <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 5 }} style={{ marginTop: '8px' }}>
                   <Icon 
@@ -343,11 +345,11 @@ const ForecastList = ({
           setSelectedHourContent(null);
         }}
         type={PanelType.medium}
-        headerText={selectedHourContent ? 
-          `Pronóstico para las ${new Date(selectedHourContent.time.replace(' ', 'T')).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 
-          "Detalles del pronóstico"
+        headerText={selectedHourContent ?
+          t('fiveDayForecast.detailsFor', { time: new Date(selectedHourContent.time.replace(' ', 'T')).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }) :
+          t('fiveDayForecast.detailsTitle')
         }
-        closeButtonAriaLabel="Cerrar"
+        closeButtonAriaLabel={t('common.close')}
         styles={{
           main: {
             animation: AnimationStyles.slideLeftIn400.toString()

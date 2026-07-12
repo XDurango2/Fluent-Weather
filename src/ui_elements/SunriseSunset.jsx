@@ -1,12 +1,15 @@
 import React from 'react';
 import { Stack, Text, Icon } from '@fluentui/react';
+import { useTranslation } from 'react-i18next';
 
 const SunriseSunset = ({ astro }) => {
+  const { t } = useTranslation();
+
   if (!astro || (!astro.sunrise && !astro.sunset)) return null;
 
   return (
     <Stack style={{ marginTop: 20 }}>
-      <Text variant="large">Amanecer y Atardecer</Text>
+      <Text variant="large">{t('sunriseSunset.title')}</Text>
 
       <Stack horizontal tokens={{ childrenGap: 16 }} style={{ marginTop: 10 }}>
         <Stack
@@ -22,7 +25,7 @@ const SunriseSunset = ({ astro }) => {
         >
           <Icon iconName="Sunny" style={{ fontSize: 28, color: '#F7B500' }} />
           <Stack>
-            <Text variant="small" style={{ opacity: 0.8 }}>Amanecer</Text>
+            <Text variant="small" style={{ opacity: 0.8 }}>{t('sunriseSunset.sunrise')}</Text>
             <Text variant="large" style={{ fontWeight: 'bold' }}>{astro.sunrise}</Text>
           </Stack>
         </Stack>
@@ -40,7 +43,7 @@ const SunriseSunset = ({ astro }) => {
         >
           <Icon iconName="Sunny" style={{ fontSize: 28, color: '#D2691E' }} />
           <Stack>
-            <Text variant="small" style={{ opacity: 0.8 }}>Atardecer</Text>
+            <Text variant="small" style={{ opacity: 0.8 }}>{t('sunriseSunset.sunset')}</Text>
             <Text variant="large" style={{ fontWeight: 'bold' }}>{astro.sunset}</Text>
           </Stack>
         </Stack>

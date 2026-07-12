@@ -1,10 +1,10 @@
 import React from 'react';
 import { Text } from '@fluentui/react';
 
-const UVHourly = ({ hourlyData, darkMode }) => {
+const UVHourly = ({ hourlyData, darkMode, title }) => {
   return (
     <>
-      <Text variant="mediumPlus">Horario del índice UV para hoy:</Text>
+      <Text variant="mediumPlus">{title}</Text>
       <div style={{
         display: 'flex',
         overflowX: 'auto',

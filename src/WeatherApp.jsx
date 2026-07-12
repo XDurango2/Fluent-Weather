@@ -9,6 +9,8 @@ import {
   ThemeProvider,
   initializeIcons
 } from '@fluentui/react';
+import { useTranslation } from 'react-i18next';
+import './i18n';
 import SearchForm from './ui_elements/search_form';
 import Header from './components/Header.jsx';
 import SettingsPanel from './components/SettingsPanel';
@@ -25,6 +27,7 @@ import {
 initializeIcons();
 
 const WeatherApp = () => {
+  const { t } = useTranslation();
   // State management
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -63,7 +66,7 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
         setWeatherData(data);
         setError(null);
       } catch (err) {
-        setError('Error al cargar los datos del clima: ' + err.message);
+        setError(`${t('errors.loadWeather')}: ${err.message}`);
         console.error(err);
       } finally {
         setLoading(false);
@@ -85,8 +88,8 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
         const data = await getWeatherDataWithFallback(comparisonCity);
         setComparisonData(data);
       } catch (err) {
-        setComparisonError('Error al obtener datos de comparación: ' + err.message);
-        console.error('Error al obtener datos de comparación:', err.message);
+        setComparisonError(`${t('errors.loadComparison')}: ${err.message}`);
+        console.error('Error fetching comparison data:', err.message);
         setComparisonData(null);
       } finally {
         setComparisonLoading(false);
@@ -104,7 +107,7 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
         setExtendedForecast(data);
         setExtendedForecastError(null);
       } catch (err) {
-        setExtendedForecastError('Error al cargar el pronóstico extendido: ' + err.message);
+        setExtendedForecastError(`${t('errors.loadExtendedForecast')}: ${err.message}`);
         console.error('Error fetching extended forecast:', err);
       } finally {
         setExtendedForecastLoading(false);
@@ -126,12 +129,12 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
       setCity(trimmedCity);
       setSearchCity('');
     } else {
-      setError('Formato de nombre de ciudad no válido');
+      setError(t('errors.invalidCityFormat'));
     }
   };
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
-      setError('La geolocalización no está disponible en este navegador');
+      setError(t('errors.geolocationUnavailable'));
       return;
     }
 
@@ -144,11 +147,11 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
       },
       (geoError) => {
         const messages = {
-          1: 'Permiso de ubicación denegado. Habilítalo en la configuración del navegador.',
-          2: 'No se pudo determinar tu ubicación.',
-          3: 'La búsqueda de tu ubicación tardó demasiado. Intenta de nuevo.',
+          1: t('errors.geoPermissionDenied'),
+          2: t('errors.geoPositionUnavailable'),
+          3: t('errors.geoTimeout'),
         };
-        setError(messages[geoError.code] || 'No se pudo obtener tu ubicación');
+        setError(messages[geoError.code] || t('errors.geoGeneric'));
         setLocating(false);
       },
       { timeout: 20000, maximumAge: 60000, enableHighAccuracy: false }
@@ -166,8 +169,8 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
       setComparisonData(data);
       setComparisonCity(newCity);
     } catch (err) {
-      setComparisonError('Error al obtener datos de comparación: ' + err.message);
-      console.error('Error al obtener datos de comparación:', err);
+      setComparisonError(`${t('errors.loadComparison')}: ${err.message}`);
+      console.error('Error fetching comparison data:', err);
       setComparisonData(null);
     } finally {
       setComparisonLoading(false);
@@ -233,8 +236,8 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
                   }
                 }
               }}
-              title="Comparar ciudades"
-              ariaLabel="Comparar ciudades"
+              title={t('nav.compareCities')}
+              ariaLabel={t('nav.compareCities')}
             />
             )}
             <IconButton
@@ -251,8 +254,8 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
                   }
                 }
               }}
-              title="Configuración"
-              ariaLabel="Configuración"
+              title={t('nav.settings')}
+              ariaLabel={t('nav.settings')}
             />
             </Stack>
             </Stack>
@@ -291,11 +294,11 @@ const windField = windUnit === 'kmh' ? 'wind_kph' : 'wind_mph';
           />
 
           {loading ? (
-            <Spinner size={SpinnerSize.large} label="Cargando datos del clima..." />
+            <Spinner size={SpinnerSize.large} label={t('errors.loadingWeather')} />
           ) : error ? (
             <Stack tokens={{ childrenGap: 10 }} horizontalAlign="start">
               <Text variant="large" style={{ color: 'red' }}>{error}</Text>
-              <DefaultButton text="Reintentar" onClick={handleRetry} />
+              <DefaultButton text={t('errors.retry')} onClick={handleRetry} />
             </Stack>
           ) : weatherData && (
             <WeatherDashboard 
