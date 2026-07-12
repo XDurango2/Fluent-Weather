@@ -41,22 +41,27 @@ const UVScale = ({ uvIndex }) => {
             const width = `${(rangeSpan / totalSpan) * 100}%`;
             
             return (
-              <div 
+              <div
                 key={index}
-                style={{ 
-                  backgroundColor: range.color, 
-                  width, 
+                style={{
+                  backgroundColor: range.color,
+                  width,
                   height: '100%',
                   display: 'flex',
                   justifyContent: 'center',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  overflow: 'hidden',
+                  padding: '0 2px'
                 }}
               >
-                <Text 
-                  style={{ 
-                    color: range.textColor, 
+                <Text
+                  style={{
+                    color: range.textColor,
                     fontWeight: currentRange === range ? 'bold' : 'normal',
-                    fontSize: '12px'
+                    fontSize: 'clamp(8px, 2.5vw, 12px)',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
                   }}
                 >
                   {range.label}

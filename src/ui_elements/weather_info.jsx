@@ -118,9 +118,9 @@ const WeatherInfo = ({
       darkMode={darkMode}
       CurrentCondition={weatherData.current.condition.text}
     >
-      <Stack 
+      <Stack
         style={{
-          padding: 120,
+          padding: 'clamp(12px, 4vw, 24px)',
           backgroundColor: 'rgba(0, 0, 0, 0.3)',
           borderRadius: 4,
           color: darkMode ? '#ffffff' : '#000000',
@@ -142,18 +142,18 @@ const WeatherInfo = ({
         <Stack horizontal style={{ alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
           <Stack>
             <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 8 }}>
-              <Text style={{ fontSize: 72, fontWeight: 'bold' }}>
-                {temperatureUnit === 'celsius' ? 
-                  `${weatherData.current.temp_c}°C` : 
+              <Text style={{ fontSize: 'clamp(40px, 12vw, 72px)', fontWeight: 'bold' }}>
+                {temperatureUnit === 'celsius' ?
+                  `${weatherData.current.temp_c}°C` :
                   `${weatherData.current.temp_f}°F`}
               </Text>
-              <Icon 
-                iconName={getWeatherIcon(weatherData.current.condition.text)} 
-                style={{ 
-                  fontSize: 48, 
+              <Icon
+                iconName={getWeatherIcon(weatherData.current.condition.text)}
+                style={{
+                  fontSize: 'clamp(28px, 8vw, 48px)',
                   color: darkMode ? '#00b7ff' : '#0078d4',
-                  marginLeft: 10 
-                }} 
+                  marginLeft: 10
+                }}
               />
             </Stack>
             <Stack horizontal verticalAlign="center" tokens={{ childrenGap: 10 }} style={{ marginTop: 10 }}>

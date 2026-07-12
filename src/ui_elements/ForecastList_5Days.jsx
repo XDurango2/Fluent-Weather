@@ -150,20 +150,20 @@ const ForecastList = ({
           })}
         </Text>
         
-        <Stack horizontal tokens={{ childrenGap: 20 }}>
-          <Stack>
+        <Stack horizontal wrap tokens={{ childrenGap: 20 }}>
+          <Stack style={{ minWidth: 140 }}>
             <Text variant="large">Temperatura</Text>
             <Text>Promedio: {formatTemperature(day.avgtemp_c)}°{getTempUnitSymbol()}</Text>
             <Text>Máxima: {formatTemperature(day.maxtemp_c)}°{getTempUnitSymbol()}</Text>
             <Text>Mínima: {formatTemperature(day.mintemp_c)}°{getTempUnitSymbol()}</Text>
           </Stack>
           
-          <Stack>
+          <Stack style={{ minWidth: 140 }}>
             <Text variant="large">Viento</Text>
             <Text>Máximo: {formatWindSpeed(day.maxwind_kph)} {getWindUnitSymbol()}</Text>
           </Stack>
-          
-          <Stack>
+
+          <Stack style={{ minWidth: 140 }}>
             <Text variant="large">Condiciones</Text>
             <Text>Humedad: {day.avghumidity}%</Text>
             <Text>UV: {day.uv}</Text>
